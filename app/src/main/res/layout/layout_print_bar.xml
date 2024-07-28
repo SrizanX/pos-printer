@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/bar_code"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_enter_bar_code" />
+
+        <TextView
+            android:id="@+id/tv_bar_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bar_height" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider_bar_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="1"
+            android:value="8"
+            android:valueFrom="1"
+            android:valueTo="255" />
+
+
+        <TextView
+            android:id="@+id/tv_bar_width"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bar_width" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider_bar_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stepSize="1"
+            android:value="2"
+            android:valueFrom="2"
+            android:valueTo="6" />
+
+
+        <include
+            android:id="@+id/layout_alignment"
+            layout="@layout/layout_alignment_selector" />
+
+
+        <Button
+            android:id="@+id/btn_print_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/print_bar_code" />
+
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

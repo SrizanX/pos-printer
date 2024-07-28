@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="printer_status_disconnected">Printer is not connected. Please try again!</string>
+    <string name="printer_status_cover_is_not_closed">Printer\'s cover is not closed.</string>
+    <string name="printer_status_out_of_paper">Printer is out of paper.</string>
+    <string name="printer_status_overheating">Printer is overheating.</string>
+    <string name="printer_status_error_unknown">Unknown error occurred with printer.</string>
+</resources>

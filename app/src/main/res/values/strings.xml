@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">POS Printer</string>
+    <string name="lorem_ipsum_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum consequat varius. Nullam faucibus, velit sit amet iaculis rutrum, urna diam sollicitudin lectus, sit amet consectetur lorem risus ut tortor.</string>
+    <string name="lorem_ipsum_short">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+
+    <string name="font_size">Font size: %d</string>
+    <string name="qr_size">QR size: %d</string>
+    <string name="bar_height">Bar height: %d</string>
+    <string name="bar_width">Bar width: %d</string>
+
+    <string name="bold">Bold</string>
+    <string name="italic">Italic</string>
+    <string name="underlined">Underlined</string>
+    <string name="strikethrough">Strikethrough</string>
+
+    <string name="inverse_color">Inverse Color</string>
+    <string name="add_3_line_space">Add 3 Line space</string>
+
+    <string name="select_printer">Select Printer</string>
+    <string name="print_sample">Print Sample</string>
+    <string name="print_text">Print Text</string>
+    <string name="print_qr_code">Print QR Code</string>
+    <string name="print_bar_code">Print Bar Code</string>
+
+    <string name="hint_enter_text">Enter text</string>
+    <string name="hint_enter_bar_code">Enter Bar Code</string>
+    <string name="bar_code">Bar Code</string>
+    <string name="left">Left</string>
+    <string name="center">Center</string>
+    <string name="right">Right</string>
+    <string name="hint_enter_qr_text">Enter QR text</string>
+    <string name="qr_code">QR Code</string>
+</resources>
