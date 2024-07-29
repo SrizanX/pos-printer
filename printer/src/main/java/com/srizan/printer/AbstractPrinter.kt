@@ -7,6 +7,16 @@ internal interface AbstractPrinter {
     fun printTable(columns: Array<String>, tableConfig: TableConfig, textConfig: TextConfig)
     fun printNewLine(lineCount: Int)
     fun printQRCode(data: String, size: Int, alignment: Alignment)
+
+    fun printBarcode(
+        data: String,
+        height: Int,
+        width: Int,
+        alignment: Alignment,
+        symbology: BarcodeSymbology,
+        textPosition: BarcodeTextPosition
+    )
+
     fun printImage(bitmap: Bitmap, alignment: Alignment)
     fun getStatus(): PrinterStatus
 }

@@ -9,11 +9,11 @@ enum class BarcodeSymbology {
     UPC_E,
 
 
-    JAN13EAN13,
-    JAN8EAN8,
+    EAN_13,
+    EAN_8,
 
     /**
-     * A through Z), numeric digits (0 through 9) and a number of special characters (-, ., $, /, +, %, and space)
+     * (A through Z), numeric digits (0 through 9) and a number of special characters (-, ., $, /, +, %, and space)
      * */
     CODE_39,
     ITF,
@@ -23,6 +23,6 @@ enum class BarcodeSymbology {
     /**Variable length alphanumeric data
      * Supports full 128-character ASCII character set
      * */
-    CODE128,
+    CODE_128,
 
 }

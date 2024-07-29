@@ -2,9 +2,12 @@ package com.srizan.printer.sunmi
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.RemoteException
 import android.util.Log
 import com.srizan.printer.AbstractPrinter
 import com.srizan.printer.Alignment
+import com.srizan.printer.BarcodeSymbology
+import com.srizan.printer.BarcodeTextPosition
 import com.srizan.printer.PrinterStatus
 import com.srizan.printer.TableConfig
 import com.srizan.printer.TextConfig
@@ -78,6 +81,29 @@ internal class PrinterSunmi(private val applicationContext: Context) : AbstractP
         printer?.setAlignment(alignment.getIntAlignment(), null)
         printer?.printQRCode(data, size, 1, null)
         printer?.lineWrap(3, null)
+    }
+
+    override fun printBarcode(
+        data: String,
+        height: Int,
+        width: Int,
+        alignment: Alignment,
+        symbology: BarcodeSymbology,
+        textPosition: BarcodeTextPosition
+    ) {
+        if (printer == null) return
+        try {
+            printer?.printBarCode(
+                data,
+                symbology.ordinal,
+                height,
+                width,
+                textPosition.ordinal,
+                null
+            )
+        } catch (e: RemoteException) {
+            e.printStackTrace()
+        }
     }
 
     override fun printImage(bitmap: Bitmap, alignment: Alignment) {

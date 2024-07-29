@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -17,24 +18,48 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/text"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_enter_bar_code" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:counterEnabled="true">
+
+                <EditText
+                    android:id="@+id/text_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="@string/hint_enter_bar_code" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Spinner
+                android:id="@+id/spinner_symbology"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_bar_height"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bar_height" />
+            android:layout_marginTop="16dp"
+            android:text="@string/bar_height"
+            android:textStyle="bold" />
 
         <com.google.android.material.slider.Slider
             android:id="@+id/slider_bar_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stepSize="1"
-            android:value="8"
+            android:value="100"
             android:valueFrom="1"
             android:valueTo="255" />
 
@@ -43,22 +68,71 @@
             android:id="@+id/tv_bar_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bar_width" />
+            android:text="@string/bar_width"
+            android:textStyle="bold" />
 
         <com.google.android.material.slider.Slider
             android:id="@+id/slider_bar_width"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stepSize="1"
-            android:value="2"
+            android:value="3"
             android:valueFrom="2"
             android:valueTo="6" />
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alignment"
+            android:textStyle="bold" />
 
         <include
             android:id="@+id/layout_alignment"
             layout="@layout/layout_alignment_selector" />
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/barcode_text_position"
+            android:textStyle="bold" />
+
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_bar_text_position_hidden"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Hidden" />
+
+            <RadioButton
+                android:id="@+id/rb_bar_text_position_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Top" />
+
+            <RadioButton
+                android:id="@+id/rb_bar_text_position_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Bottom" />
+
+            <RadioButton
+                android:id="@+id/rb_bar_text_position_both"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Both" />
+        </RadioGroup>
 
         <Button
             android:id="@+id/btn_print_bar"

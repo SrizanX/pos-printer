@@ -65,6 +65,17 @@ object Printer {
         printer.printQRCode(data, size, alignment)
     }
 
+    fun printBarcode(
+        data: String,
+        height: Int,
+        width: Int,
+        alignment: Alignment,
+        symbology: BarcodeSymbology,
+        textPosition: BarcodeTextPosition
+    ) {
+        printer.printBarcode(data, height, width, alignment, symbology, textPosition)
+    }
+
     fun printImage(bitmap: Bitmap, alignment: Alignment) {
         printer.printImage(bitmap, alignment)
     }

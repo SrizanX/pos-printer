@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import com.sr.SrPrinter
 import com.srizan.printer.AbstractPrinter
 import com.srizan.printer.Alignment
+import com.srizan.printer.BarcodeSymbology
+import com.srizan.printer.BarcodeTextPosition
 import com.srizan.printer.PrinterStatus
 import com.srizan.printer.TableConfig
 import com.srizan.printer.TextConfig
@@ -45,6 +47,17 @@ internal class PrinterPrinton(applicationContext: Context) : AbstractPrinter {
         printer.setAlignment(alignment.getIntAlignment())
         printer.printQRCode(data, size, 3)
         printer.nextLine(3)
+    }
+
+    override fun printBarcode(
+        data: String,
+        height: Int,
+        width: Int,
+        alignment: Alignment,
+        symbology: BarcodeSymbology,
+        textPosition: BarcodeTextPosition
+    ) {
+
     }
 
     override fun printImage(bitmap: Bitmap, alignment: Alignment) {

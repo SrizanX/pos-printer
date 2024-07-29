@@ -11,6 +11,8 @@ import com.nexgo.oaf.apiv3.device.printer.LineOptionEntity
 import com.nexgo.oaf.apiv3.device.printer.Printer
 import com.srizan.printer.AbstractPrinter
 import com.srizan.printer.Alignment
+import com.srizan.printer.BarcodeSymbology
+import com.srizan.printer.BarcodeTextPosition
 import com.srizan.printer.PrinterStatus
 import com.srizan.printer.TableConfig
 import com.srizan.printer.TextConfig
@@ -64,6 +66,17 @@ internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
 
     override fun printQRCode(data: String, size: Int, alignment: Alignment) {
         printer?.appendQRcode(data, size.times(25), alignment.getNexgoAlignEnum())
+    }
+
+    override fun printBarcode(
+        data: String,
+        height: Int,
+        width: Int,
+        alignment: Alignment,
+        symbology: BarcodeSymbology,
+        textPosition: BarcodeTextPosition
+    ) {
+
     }
 
     override fun printImage(bitmap: Bitmap, alignment: Alignment) {

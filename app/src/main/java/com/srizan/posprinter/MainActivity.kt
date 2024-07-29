@@ -3,14 +3,21 @@ package com.srizan.posprinter
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.InputFilter
+import android.text.InputType
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmapOrNull
 import com.srizan.posprinter.databinding.ActivityMainBinding
 import com.srizan.printer.Alignment
+import com.srizan.printer.BarcodeSymbology
 import com.srizan.printer.Printer
 import com.srizan.printer.PrinterDevice
 import com.srizan.printer.TextConfig
@@ -46,6 +53,29 @@ class MainActivity : AppCompatActivity() {
         binding.layoutBar.run {
             setBarCodeHeight(sliderBarHeight.value)
             setBarCodeWidth(sliderBarWidth.value)
+
+            ArrayAdapter(
+                this@MainActivity,
+                android.R.layout.simple_spinner_dropdown_item,
+                BarcodeSymbology.entries.toTypedArray()
+            ).also { arrayAdapter ->
+                spinnerSymbology.adapter = arrayAdapter
+                spinnerSymbology.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            setupBarcodeEditText(arrayAdapter.getItem(position) as BarcodeSymbology)
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                    }
+            }
+
             sliderBarHeight.addOnChangeListener { _, value, _ -> setBarCodeHeight(value) }
             sliderBarWidth.addOnChangeListener { _, value, _ -> setBarCodeWidth(value) }
             btnPrintBar.setOnClickListener { printBarCode() }
@@ -105,6 +135,20 @@ class MainActivity : AppCompatActivity() {
         binding.layoutBar.run {
             val alignment: Alignment = if (layoutAlignment.rbLeft.isChecked) Alignment.LEFT
             else if (layoutAlignment.rbCenter.isChecked) Alignment.CENTER else Alignment.RIGHT
+
+            val sItem = spinnerSymbology.selectedItem as BarcodeSymbology
+
+            Log.d(TAG, "printBarCode: $sItem")
+
+            Printer.printBarcode(
+                data = textBarcode.text.toString(),
+                height = sliderBarHeight.value.toInt(),
+                width = sliderBarWidth.value.toInt(),
+                alignment = alignment,
+                symbology = sItem,
+                textPosition = com.srizan.printer.BarcodeTextPosition.BOTTOM
+            )
+            Printer.printNewLine(3)
         }
     }
 
@@ -112,6 +156,81 @@ class MainActivity : AppCompatActivity() {
         val drawable = AppCompatResources.getDrawable(this, R.drawable.logo_jatri)
         val logo = drawable?.toBitmapOrNull()
         if (Printer.isOperational()) Printer.test(logo)
+    }
+
+    private fun setupBarcodeEditText(symbology: BarcodeSymbology) {
+        when (symbology) {
+            BarcodeSymbology.UPC_A -> {
+                setupTextEditText(
+                    inputLength = 12,
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                )
+            }
+
+            BarcodeSymbology.UPC_E -> {
+                setupTextEditText(
+                    inputLength = 7,
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                )
+            }
+
+            BarcodeSymbology.EAN_13 -> {
+                setupTextEditText(
+                    inputLength = 12,
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                )
+            }
+
+            BarcodeSymbology.EAN_8 -> {
+                setupTextEditText(
+                    inputLength = 7,
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                )
+            }
+
+            BarcodeSymbology.CODE_39 -> {
+                setupTextEditText(
+                    inputType = InputType.TYPE_CLASS_TEXT
+                )
+            }
+
+            BarcodeSymbology.ITF -> {
+                setupTextEditText(
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                )
+            }
+
+            BarcodeSymbology.CODABAR -> {
+                setupTextEditText(
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                )
+            }
+
+            BarcodeSymbology.CODE_93 -> {
+                setupTextEditText(
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                )
+            }
+
+            BarcodeSymbology.CODE_128 -> {
+                setupTextEditText(
+                    inputType = InputType.TYPE_CLASS_TEXT
+                )
+            }
+        }
+    }
+
+    private fun setupTextEditText(
+        inputLength: Int = -1,
+        inputType: Int,
+    ) {
+        binding.layoutBar.apply {
+            textBarcode.inputType = inputType
+            tilBarcode.counterMaxLength = inputLength
+            textBarcode.filters =
+                if (inputLength <= 0) arrayOf() else arrayOf(InputFilter.LengthFilter(inputLength))
+
+        }
     }
 
     private fun showPrinterSelectorDialog() {
