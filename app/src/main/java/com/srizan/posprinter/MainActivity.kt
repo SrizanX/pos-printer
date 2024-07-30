@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputType
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,6 +17,7 @@ import androidx.core.graphics.drawable.toBitmapOrNull
 import com.srizan.posprinter.databinding.ActivityMainBinding
 import com.srizan.printer.Alignment
 import com.srizan.printer.BarcodeSymbology
+import com.srizan.printer.BarcodeTextPosition
 import com.srizan.printer.Printer
 import com.srizan.printer.PrinterDevice
 import com.srizan.printer.TextConfig
@@ -136,17 +136,20 @@ class MainActivity : AppCompatActivity() {
             val alignment: Alignment = if (layoutAlignment.rbLeft.isChecked) Alignment.LEFT
             else if (layoutAlignment.rbCenter.isChecked) Alignment.CENTER else Alignment.RIGHT
 
-            val sItem = spinnerSymbology.selectedItem as BarcodeSymbology
+            val textPosition = if (rbBarTextPositionHidden.isChecked) BarcodeTextPosition.HIDDEN
+            else if (rbBarTextPositionTop.isChecked) BarcodeTextPosition.TOP
+            else if (rbBarTextPositionBottom.isChecked) BarcodeTextPosition.BOTTOM
+            else BarcodeTextPosition.TOP_AND_BOTTOM
 
-            Log.d(TAG, "printBarCode: $sItem")
+            val barcodeSymbology = spinnerSymbology.selectedItem as BarcodeSymbology
 
             Printer.printBarcode(
                 data = textBarcode.text.toString(),
                 height = sliderBarHeight.value.toInt(),
                 width = sliderBarWidth.value.toInt(),
                 alignment = alignment,
-                symbology = sItem,
-                textPosition = com.srizan.printer.BarcodeTextPosition.BOTTOM
+                symbology = barcodeSymbology,
+                textPosition = textPosition
             )
             Printer.printNewLine(3)
         }

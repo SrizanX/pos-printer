@@ -18,13 +18,12 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
 
     init {
         printer.initPrinterService(applicationContext)
-        serialNo()
     }
 
     override fun printText(text: String, config: TextConfig) {
         printer.run {
             setTextBitmapSize(config.size)
-            setTextBitmapStyle(config.getTextStyle())
+            setTextBitmapStyle(config.getTextStyleImin())
             setTextBitmapUnderline(config.isUnderLined)
             setTextBitmapStrikeThru(config.isStrikethrough)
             setTextBitmapAntiWhite(config.isInverseColor)

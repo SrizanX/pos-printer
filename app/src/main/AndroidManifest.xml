@@ -3,17 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <queries>
-        <package android:name="woyou.aidlservice.jiuiv5" />
-    </queries>
-
-    <queries>
-        <package android:name="com.neo.printer.sdk" />
-        <intent>
-            <action android:name="com.neo.printer.sdk.core.ApiAdapterManager.NeoPrinterService" />
-        </intent>
-    </queries>
-
     <application
         android:name=".PrinterApplication"
         android:allowBackup="true"

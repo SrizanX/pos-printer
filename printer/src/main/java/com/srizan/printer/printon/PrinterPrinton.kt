@@ -44,9 +44,10 @@ internal class PrinterPrinton(applicationContext: Context) : AbstractPrinter {
     }
 
     override fun printQRCode(data: String, size: Int, alignment: Alignment) {
-        printer.setAlignment(alignment.getIntAlignment())
-        printer.printQRCode(data, size, 3)
-        printer.nextLine(3)
+        printer.run {
+            setAlignment(alignment.getIntAlignment())
+            printQRCode(data, size, 3)
+        }
     }
 
     override fun printBarcode(
@@ -57,12 +58,17 @@ internal class PrinterPrinton(applicationContext: Context) : AbstractPrinter {
         symbology: BarcodeSymbology,
         textPosition: BarcodeTextPosition
     ) {
-
+        printer.run {
+            setAlignment(alignment.getIntAlignment())
+            printBarCode(data, symbology.ordinal, height, width)
+        }
     }
 
     override fun printImage(bitmap: Bitmap, alignment: Alignment) {
-        printer.setAlignment(alignment.getIntAlignment())
-        printer.printBitmap(bitmap)
+        printer.run {
+            setAlignment(alignment.getIntAlignment())
+            printBitmap(bitmap)
+        }
     }
 
     override fun getStatus(): PrinterStatus {

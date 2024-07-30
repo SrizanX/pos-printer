@@ -15,6 +15,7 @@ import com.srizan.printer.getIntAlignment
 import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterException
 import com.sunmi.peripheral.printer.InnerPrinterManager
+import com.sunmi.peripheral.printer.InnerResultCallback
 import com.sunmi.peripheral.printer.SunmiPrinterService
 import com.sunmi.peripheral.printer.WoyouConsts
 
@@ -52,7 +53,7 @@ internal class PrinterSunmi(private val applicationContext: Context) : AbstractP
     override fun printText(text: String, config: TextConfig) {
         try {
             printer?.setAlignment(config.alignment.getIntAlignment(), null)
-            setTextStyle(config)
+            printer?.setTextStyle(config)
             printer?.printTextWithFont(text, null, config.size.toFloat(), null)
         } catch (e: Exception) {
             Log.d("asd", "printText: ${e.localizedMessage}")
@@ -99,7 +100,23 @@ internal class PrinterSunmi(private val applicationContext: Context) : AbstractP
                 height,
                 width,
                 textPosition.ordinal,
-                null
+                object : InnerResultCallback() {
+                    override fun onRunResult(isSuccess: Boolean) {
+                        Log.d("asd", "onRunResult: $isSuccess")
+                    }
+
+                    override fun onReturnString(result: String?) {
+                        Log.d("asd", "onReturnString: $result")
+                    }
+
+                    override fun onRaiseException(code: Int, msg: String?) {
+                        Log.d("asd", "onRaiseException: code ->$code, msg: $msg")
+                    }
+
+                    override fun onPrintResult(code: Int, msg: String?) {
+                        Log.d("asd", "onPrintResult: code ->$code, msg: $msg")
+                    }
+                }
             )
         } catch (e: RemoteException) {
             e.printStackTrace()
@@ -111,41 +128,8 @@ internal class PrinterSunmi(private val applicationContext: Context) : AbstractP
         printer?.printBitmap(bitmap, null)
     }
 
-    private fun setTextStyle(config: TextConfig) {
-        printer?.setPrinterStyle(
-            WoyouConsts.ENABLE_INVERT,
-            WoyouConsts.DISABLE
-        )
-
-        printer?.setPrinterStyle(
-            WoyouConsts.ENABLE_BOLD,
-            if (config.isBold) WoyouConsts.ENABLE else WoyouConsts.DISABLE
-        )
-
-        printer?.setPrinterStyle(
-            WoyouConsts.ENABLE_ILALIC,
-            if (config.isItalic) WoyouConsts.ENABLE else WoyouConsts.DISABLE
-        )
-
-        printer?.setPrinterStyle(
-            WoyouConsts.ENABLE_UNDERLINE,
-            if (config.isUnderLined) WoyouConsts.ENABLE else WoyouConsts.DISABLE
-        )
-
-        printer?.setPrinterStyle(
-            WoyouConsts.ENABLE_STRIKETHROUGH,
-            if (config.isStrikethrough) WoyouConsts.ENABLE else WoyouConsts.DISABLE
-        )
-
-        printer?.setPrinterStyle(
-            WoyouConsts.ENABLE_ANTI_WHITE,
-            if (config.isInverseColor) WoyouConsts.ENABLE else WoyouConsts.DISABLE
-        )
-    }
-
     override fun getStatus(): PrinterStatus {
         if (printer == null) return PrinterStatus.DISCONNECTED
-        Log.d("asd", "getStatus: ${printer?.updatePrinterState()}")
         return when (printer?.updatePrinterState()) {
             1 -> PrinterStatus.NORMAL
             4 -> PrinterStatus.OUT_OF_PAPER
@@ -153,5 +137,36 @@ internal class PrinterSunmi(private val applicationContext: Context) : AbstractP
             6 -> PrinterStatus.OPEN_COVER
             else -> PrinterStatus.UNKNOWN
         }
+    }
+
+    private fun SunmiPrinterService.setTextStyle(config: TextConfig) {
+        setPrinterStyle(
+            WoyouConsts.ENABLE_BOLD,
+            getStyleState(config.isBold)
+        )
+
+        setPrinterStyle(
+            WoyouConsts.ENABLE_ILALIC,
+            getStyleState(config.isItalic)
+        )
+
+        setPrinterStyle(
+            WoyouConsts.ENABLE_UNDERLINE,
+            getStyleState(config.isUnderLined)
+        )
+
+        setPrinterStyle(
+            WoyouConsts.ENABLE_STRIKETHROUGH,
+            getStyleState(config.isStrikethrough)
+        )
+
+        setPrinterStyle(
+            WoyouConsts.ENABLE_ANTI_WHITE,
+            getStyleState(config.isInverseColor)
+        )
+    }
+
+    private fun getStyleState(isEnable: Boolean): Int {
+        return if (isEnable) WoyouConsts.ENABLE else WoyouConsts.DISABLE
     }
 }

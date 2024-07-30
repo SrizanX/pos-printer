@@ -6,9 +6,12 @@ import android.graphics.Typeface
 import android.util.Log
 import com.nexgo.oaf.apiv3.APIProxy
 import com.nexgo.oaf.apiv3.DeviceEngine
+import com.nexgo.oaf.apiv3.SdkResult
 import com.nexgo.oaf.apiv3.device.printer.AlignEnum
+import com.nexgo.oaf.apiv3.device.printer.BarcodeFormatEnum
 import com.nexgo.oaf.apiv3.device.printer.LineOptionEntity
 import com.nexgo.oaf.apiv3.device.printer.Printer
+import com.sr.SrPrinter
 import com.srizan.printer.AbstractPrinter
 import com.srizan.printer.Alignment
 import com.srizan.printer.BarcodeSymbology
@@ -77,6 +80,16 @@ internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
         textPosition: BarcodeTextPosition
     ) {
 
+        printer?.appendBarcode(
+            data,
+            height,
+            0,
+            width,
+            symbology.getNexgoSymbology(),
+            alignment.getNexgoAlignEnum()
+        )
+        startPrint()
+
     }
 
     override fun printImage(bitmap: Bitmap, alignment: Alignment) {
@@ -84,6 +97,10 @@ internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
     }
 
     override fun getStatus(): PrinterStatus {
+        when (printer?.status) {
+            SdkResult.Printer_PaperLack -> return PrinterStatus.OUT_OF_PAPER
+            SdkResult.Printer_TooHot -> return PrinterStatus.OVERHEATED
+        }
         return PrinterStatus.NORMAL
     }
 
@@ -92,10 +109,4 @@ internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
             Log.d("asd", "startPrint: $n")
         }
     }
-}
-
-fun Alignment.getNexgoAlignEnum() = when (this) {
-    Alignment.LEFT -> AlignEnum.LEFT
-    Alignment.CENTER -> AlignEnum.CENTER
-    Alignment.RIGHT -> AlignEnum.RIGHT
 }
