@@ -12,12 +12,20 @@ import com.srizan.printer.PrinterStatus
 import com.srizan.printer.TableConfig
 import com.srizan.printer.TextConfig
 import com.srizan.printer.getIntAlignment
+import com.srizan.printer.log
 
 internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
     private var printer = PrinterHelper.getInstance()
 
+    private var serialNo: String = ""
+
     init {
         printer.initPrinterService(applicationContext)
+        printer.getPrinterSerialNumber(IminCallback { serial ->
+            serial?.let { this.serialNo = it }
+            log("brd sn No: $serial")
+        })
+        log("Imin printer initialized")
     }
 
     override fun printText(text: String, config: TextConfig) {
@@ -110,6 +118,10 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
             0 -> PrinterStatus.NORMAL
             else -> PrinterStatus.UNKNOWN
         }
+    }
+
+    override fun getDeviceSerialNumber(): String {
+        return this.serialNo
     }
 
     private fun serialNo() {

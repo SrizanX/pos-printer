@@ -22,14 +22,15 @@ import com.srizan.printer.TextConfig
 
 internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
 
+    private val deviceEngine: DeviceEngine = APIProxy.getDeviceEngine(applicationContext)
     private var printer: Printer? = null
 
     init {
         try {
-            val deviceEngine: DeviceEngine = APIProxy.getDeviceEngine(applicationContext)
             printer = deviceEngine.printer
             printer?.initPrinter()
             printer?.setTypeface(Typeface.DEFAULT)
+
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
             throw throwable
@@ -102,6 +103,10 @@ internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
             SdkResult.Printer_TooHot -> return PrinterStatus.OVERHEATED
         }
         return PrinterStatus.NORMAL
+    }
+
+    override fun getDeviceSerialNumber(): String? {
+        return deviceEngine.deviceInfo.sn
     }
 
     fun startPrint() {

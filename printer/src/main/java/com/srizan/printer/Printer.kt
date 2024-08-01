@@ -1,7 +1,10 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.srizan.printer
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.widget.Toast
 import com.srizan.printer.imin.PrinterImin
 import com.srizan.printer.nexgo.PrinterNexgo
@@ -15,10 +18,8 @@ object Printer {
 
     fun initializePrinter(
         applicationContext: Context,
-        printerDevice: PrinterDevice = PrinterDevice.SUNMI
     ) {
         this.applicationContext = applicationContext
-        selectPrinter(printerDevice)
     }
 
     fun selectPrinter(printerDevice: PrinterDevice) {
@@ -95,6 +96,10 @@ object Printer {
         return printer.getStatus()
     }
 
+    fun getDeviceSerialNumber(): String? {
+        return printer.getDeviceSerialNumber()
+    }
+
     fun test(logo: Bitmap?) {
         val defaultTextConfig = TextConfig()
         val labelTextConfig = TextConfig(size = 26, alignment = Alignment.CENTER, isBold = true)
@@ -166,4 +171,12 @@ object Printer {
 
 fun Context.showToastMessage(resId: Int) {
     Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
+}
+
+fun log(msg: String, tag: String = "asd") {
+    if (BuildConfig.DEBUG) Log.d(tag, msg)
+}
+
+fun ifPrinterOperational(block: () -> Unit) {
+    if (Printer.isOperational()) block()
 }

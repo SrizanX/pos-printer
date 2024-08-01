@@ -2,6 +2,7 @@ package com.srizan.printer.sunmi
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.RemoteException
 import android.util.Log
 import com.srizan.printer.AbstractPrinter
@@ -168,5 +169,25 @@ internal class PrinterSunmi(private val applicationContext: Context) : AbstractP
 
     private fun getStyleState(isEnable: Boolean): Int {
         return if (isEnable) WoyouConsts.ENABLE else WoyouConsts.DISABLE
+    }
+
+    override fun getDeviceSerialNumber(): String? {
+        val classObj = Class.forName("android.os.SystemProperties")
+        val method = classObj.getMethod("get", String::class.java)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                method.invoke(classObj, "ro.sunmi.serial") as String
+            } catch (e: Exception) {
+                "ERROR_SERIAL_NOT_FOUND"
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Build.getSerial()
+        } else {
+            try {
+                method.invoke(classObj, "ro.serialno") as String
+            } catch (e: Exception) {
+                "ERROR_SERIAL_NOT_FOUND"
+            }
+        }
     }
 }

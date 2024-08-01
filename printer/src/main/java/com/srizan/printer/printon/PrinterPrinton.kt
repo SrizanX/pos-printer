@@ -74,5 +74,9 @@ internal class PrinterPrinton(applicationContext: Context) : AbstractPrinter {
     override fun getStatus(): PrinterStatus {
         return PrinterStatus.NORMAL
     }
+
+    override fun getDeviceSerialNumber(): String {
+        return ("No serial number")
+    }
 }
 

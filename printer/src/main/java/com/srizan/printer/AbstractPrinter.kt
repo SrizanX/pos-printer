@@ -19,4 +19,5 @@ internal interface AbstractPrinter {
 
     fun printImage(bitmap: Bitmap, alignment: Alignment)
     fun getStatus(): PrinterStatus
+    fun getDeviceSerialNumber(): String?
 }

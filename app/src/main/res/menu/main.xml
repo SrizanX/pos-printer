@@ -10,4 +10,8 @@
     <item
         android:id="@+id/menu_select_printer"
         android:title="@string/select_printer" />
+
+    <item
+        android:id="@+id/menu_get_printer_serial"
+        android:title="@string/get_printer_serial" />
 </menu>

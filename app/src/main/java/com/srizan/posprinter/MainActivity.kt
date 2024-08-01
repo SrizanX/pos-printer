@@ -1,7 +1,5 @@
 package com.srizan.posprinter
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputType
@@ -21,23 +19,16 @@ import com.srizan.printer.BarcodeTextPosition
 import com.srizan.printer.Printer
 import com.srizan.printer.PrinterDevice
 import com.srizan.printer.TextConfig
-
-private const val TAG = "asd"
-const val printer_key = "printer"
+import com.srizan.printer.ifPrinterOperational
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        prefs = getSharedPreferences("printer_pref", Context.MODE_PRIVATE)
         setContentView(binding.root)
-
-        val device = prefs.getString(printer_key, PrinterDevice.SUNMI.name)
-        device?.let { Printer.selectPrinter(PrinterDevice.valueOf(it)) }
         supportActionBar?.subtitle = Printer.selectedPrinter.name
 
         binding.layoutText.run {
@@ -100,19 +91,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun printText() {
         binding.layoutText.apply {
-            btnPrintText.setOnClickListener {
-                val text = text.text.toString().trim()
-                val alignment: Alignment = if (layoutAlignment.rbLeft.isChecked) Alignment.LEFT
-                else if (layoutAlignment.rbCenter.isChecked) Alignment.CENTER else Alignment.RIGHT
-                val textConfig = TextConfig(
-                    size = sliderTextSize.value.toInt(),
-                    alignment = alignment,
-                    isBold = checkboxBold.isChecked,
-                    isItalic = checkboxItalic.isChecked,
-                    isUnderLined = checkboxUnderline.isChecked,
-                    isStrikethrough = checkboxStrikethrough.isChecked,
-                    isInverseColor = checkboxInverseColor.isChecked
-                )
+            val text = text.text.toString().trim()
+            val alignment: Alignment = if (layoutAlignment.rbLeft.isChecked) Alignment.LEFT
+            else if (layoutAlignment.rbCenter.isChecked) Alignment.CENTER else Alignment.RIGHT
+            val textConfig = TextConfig(
+                size = sliderTextSize.value.toInt(),
+                alignment = alignment,
+                isBold = checkboxBold.isChecked,
+                isItalic = checkboxItalic.isChecked,
+                isUnderLined = checkboxUnderline.isChecked,
+                isStrikethrough = checkboxStrikethrough.isChecked,
+                isInverseColor = checkboxInverseColor.isChecked
+            )
+            if (Printer.isOperational()) {
                 Printer.printText(text, textConfig)
                 Printer.printNewLine(if (checkboxAdd3LineSpace.isChecked) 3 else 0)
             }
@@ -123,11 +114,14 @@ class MainActivity : AppCompatActivity() {
         binding.layoutQr.run {
             val alignment: Alignment = if (layoutAlignment.rbLeft.isChecked) Alignment.LEFT
             else if (layoutAlignment.rbCenter.isChecked) Alignment.CENTER else Alignment.RIGHT
-            Printer.printQRCode(
-                data = textQr.text.toString(),
-                size = sliderQrSize.value.toInt(),
-                alignment = alignment
-            )
+
+            ifPrinterOperational {
+                Printer.printQRCode(
+                    data = textQr.text.toString(),
+                    size = sliderQrSize.value.toInt(),
+                    alignment = alignment
+                )
+            }
         }
     }
 
@@ -271,6 +265,11 @@ class MainActivity : AppCompatActivity() {
 
             R.id.menu_print_sample -> {
                 printSample()
+                true
+            }
+
+            R.id.menu_get_printer_serial -> {
+                Printer.getDeviceSerialNumber()?.let { showToast(it) }
                 true
             }
 

@@ -11,7 +11,6 @@ data class TextConfig(
 )
 
 
-
 fun Alignment.getIntAlignment(): Int = when (this) {
     Alignment.LEFT -> 0
     Alignment.CENTER -> 1
