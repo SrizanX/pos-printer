@@ -1,18 +1,13 @@
-package com.srizan.printer
+package com.srizan.printer.config
+
+import com.srizan.printer.enums.PrinterAlignment
 
 data class TextConfig(
     val size: Int = 24,
-    val alignment: Alignment = Alignment.LEFT,
+    val printerAlignment: PrinterAlignment = PrinterAlignment.LEFT,
     val isBold: Boolean = false,
     val isItalic: Boolean = false,
     val isUnderLined: Boolean = false,
     val isStrikethrough: Boolean = false,
     val isInverseColor: Boolean = false
 )
-
-
-fun Alignment.getIntAlignment(): Int = when (this) {
-    Alignment.LEFT -> 0
-    Alignment.CENTER -> 1
-    Alignment.RIGHT -> 2
-}

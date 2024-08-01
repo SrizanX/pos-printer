@@ -1,6 +1,6 @@
-package com.srizan.printer.imin
+package com.srizan.printer.vendor.imin
 
-import com.srizan.printer.TextConfig
+import com.srizan.printer.config.TextConfig
 
 fun TextConfig.getTextStyleImin(): Int {
     return when {

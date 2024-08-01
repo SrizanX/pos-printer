@@ -1,4 +1,4 @@
-package com.srizan.printer
+package com.srizan.printer.enums
 
 enum class BarcodeSymbology {
 

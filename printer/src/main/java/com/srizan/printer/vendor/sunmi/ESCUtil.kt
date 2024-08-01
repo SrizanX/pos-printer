@@ -1,4 +1,4 @@
-package com.srizan.printer.sunmi
+package com.srizan.printer.vendor.sunmi
 
 object ESCUtil {
     const val ESC: Byte = 0x1B // Escape

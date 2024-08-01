@@ -13,12 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmapOrNull
 import com.srizan.posprinter.databinding.ActivityMainBinding
-import com.srizan.printer.Alignment
-import com.srizan.printer.BarcodeSymbology
-import com.srizan.printer.BarcodeTextPosition
 import com.srizan.printer.Printer
-import com.srizan.printer.PrinterDevice
-import com.srizan.printer.TextConfig
+import com.srizan.printer.config.BarcodeConfig
+import com.srizan.printer.config.QRCodeConfig
+import com.srizan.printer.config.TextConfig
+import com.srizan.printer.enums.PrinterAlignment
+import com.srizan.printer.enums.BarcodeSymbology
+import com.srizan.printer.enums.BarcodeTextPosition
+import com.srizan.printer.enums.PrinterDevice
 import com.srizan.printer.ifPrinterOperational
 
 class MainActivity : AppCompatActivity() {
@@ -92,18 +94,18 @@ class MainActivity : AppCompatActivity() {
     private fun printText() {
         binding.layoutText.apply {
             val text = text.text.toString().trim()
-            val alignment: Alignment = if (layoutAlignment.rbLeft.isChecked) Alignment.LEFT
-            else if (layoutAlignment.rbCenter.isChecked) Alignment.CENTER else Alignment.RIGHT
+            val printerAlignment: PrinterAlignment = if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
+            else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
             val textConfig = TextConfig(
                 size = sliderTextSize.value.toInt(),
-                alignment = alignment,
+                printerAlignment = printerAlignment,
                 isBold = checkboxBold.isChecked,
                 isItalic = checkboxItalic.isChecked,
                 isUnderLined = checkboxUnderline.isChecked,
                 isStrikethrough = checkboxStrikethrough.isChecked,
                 isInverseColor = checkboxInverseColor.isChecked
             )
-            if (Printer.isOperational()) {
+            ifPrinterOperational {
                 Printer.printText(text, textConfig)
                 Printer.printNewLine(if (checkboxAdd3LineSpace.isChecked) 3 else 0)
             }
@@ -112,14 +114,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun printQRCode() {
         binding.layoutQr.run {
-            val alignment: Alignment = if (layoutAlignment.rbLeft.isChecked) Alignment.LEFT
-            else if (layoutAlignment.rbCenter.isChecked) Alignment.CENTER else Alignment.RIGHT
+            val printerAlignment: PrinterAlignment = if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
+            else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
 
             ifPrinterOperational {
                 Printer.printQRCode(
                     data = textQr.text.toString(),
-                    size = sliderQrSize.value.toInt(),
-                    alignment = alignment
+                    QRCodeConfig(
+                        size = sliderQrSize.value.toInt(),
+                        printerAlignment = printerAlignment,
+                    )
                 )
             }
         }
@@ -127,8 +131,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun printBarCode() {
         binding.layoutBar.run {
-            val alignment: Alignment = if (layoutAlignment.rbLeft.isChecked) Alignment.LEFT
-            else if (layoutAlignment.rbCenter.isChecked) Alignment.CENTER else Alignment.RIGHT
+            val printerAlignment: PrinterAlignment = if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
+            else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
 
             val textPosition = if (rbBarTextPositionHidden.isChecked) BarcodeTextPosition.HIDDEN
             else if (rbBarTextPositionTop.isChecked) BarcodeTextPosition.TOP
@@ -137,20 +141,26 @@ class MainActivity : AppCompatActivity() {
 
             val barcodeSymbology = spinnerSymbology.selectedItem as BarcodeSymbology
 
-            Printer.printBarcode(
-                data = textBarcode.text.toString(),
+            val barcodeConfig = BarcodeConfig(
                 height = sliderBarHeight.value.toInt(),
                 width = sliderBarWidth.value.toInt(),
-                alignment = alignment,
+                printerAlignment = printerAlignment,
                 symbology = barcodeSymbology,
                 textPosition = textPosition
             )
-            Printer.printNewLine(3)
+
+            ifPrinterOperational {
+                Printer.printBarcode(
+                    data = textBarcode.text.toString(),
+                    barcodeConfig
+                )
+                Printer.printNewLine(3)
+            }
         }
     }
 
     private fun printSample() {
-        val drawable = AppCompatResources.getDrawable(this, R.drawable.logo_jatri)
+        val drawable = AppCompatResources.getDrawable(this, R.drawable.ic_android)
         val logo = drawable?.toBitmapOrNull()
         if (Printer.isOperational()) Printer.test(logo)
     }
@@ -248,7 +258,7 @@ class MainActivity : AppCompatActivity() {
     private fun onPrinterSelected(printerDevice: PrinterDevice) {
         Printer.selectPrinter(printerDevice)
         supportActionBar?.subtitle = Printer.selectedPrinter.name
-        prefs.edit().putString(printer_key, printerDevice.name).apply()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

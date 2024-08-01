@@ -1,17 +1,16 @@
-package com.srizan.printer.imin
+package com.srizan.printer.vendor.imin
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.imin.printer.PrinterHelper
 import com.srizan.printer.AbstractPrinter
-import com.srizan.printer.Alignment
-import com.srizan.printer.BarcodeSymbology
-import com.srizan.printer.BarcodeTextPosition
-import com.srizan.printer.PrinterStatus
-import com.srizan.printer.TableConfig
-import com.srizan.printer.TextConfig
-import com.srizan.printer.getIntAlignment
+import com.srizan.printer.config.BarcodeConfig
+import com.srizan.printer.config.QRCodeConfig
+import com.srizan.printer.config.TableConfig
+import com.srizan.printer.config.TextConfig
+import com.srizan.printer.enums.PrinterAlignment
+import com.srizan.printer.enums.PrinterStatus
 import com.srizan.printer.log
 
 internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
@@ -23,9 +22,8 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
         printer.initPrinterService(applicationContext)
         printer.getPrinterSerialNumber(IminCallback { serial ->
             serial?.let { this.serialNo = it }
-            log("brd sn No: $serial")
         })
-        log("Imin printer initialized")
+
     }
 
     override fun printText(text: String, config: TextConfig) {
@@ -37,7 +35,7 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
             setTextBitmapAntiWhite(config.isInverseColor)
             printTextBitmapWithAli(
                 text.removeSuffix("\n"),
-                config.alignment.getIntAlignment(),
+                config.printerAlignment.ordinal,
                 null
             )
         }
@@ -66,11 +64,11 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
     /**
      * @param size 1 <= size <= 11
      * */
-    override fun printQRCode(data: String, size: Int, alignment: Alignment) {
+    override fun printQRCode(data: String, qrCodeConfig: QRCodeConfig) {
         printer.run {
-            setQrCodeSize(if (size > 11) 11 else size)
-            printQrCodeWithAlign(data, alignment.getIntAlignment(), null)
-            printNewLine(3)
+            setQrCodeSize(qrCodeConfig.size)
+            setQrCodeErrorCorrectionLev(qrCodeConfig.errorCorrectionLevel.ordinal)
+            printQrCodeWithAlign(data, qrCodeConfig.printerAlignment.ordinal, null)
         }
     }
 
@@ -79,27 +77,23 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
      * */
     override fun printBarcode(
         data: String,
-        height: Int,
-        width: Int,
-        alignment: Alignment,
-        symbology: BarcodeSymbology,
-        textPosition: BarcodeTextPosition
+        barcodeConfig: BarcodeConfig
     ) {
         printer.printBarCodeWithFull(
             data,
-            symbology.ordinal,
-            width,
-            height,
-            textPosition.ordinal,
-            alignment.getIntAlignment(),
+            barcodeConfig.symbology.ordinal,
+            barcodeConfig.width,
+            barcodeConfig.height,
+            barcodeConfig.textPosition.ordinal,
+            barcodeConfig.printerAlignment.ordinal,
             null
         )
 
     }
 
-    override fun printImage(bitmap: Bitmap, alignment: Alignment) {
+    override fun printImage(bitmap: Bitmap, printerAlignment: PrinterAlignment) {
         printer.run {
-            setCodeAlignment(alignment.getIntAlignment())
+            setCodeAlignment(printerAlignment.ordinal)
             printBitmap(bitmap, null)
         }
     }
@@ -122,24 +116,6 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
 
     override fun getDeviceSerialNumber(): String {
         return this.serialNo
-    }
-
-    private fun serialNo() {
-        printer.getPrinterSerialNumber(IminCallback { seial ->
-            Log.d("asd", "brd sn No: $seial")
-
-        }
-        )
-
-        printer.getPrinterModelName(IminCallback { model ->
-            Log.d("asd", "Model No: $model")
-        })
-
-
-        printer.getPrinterThermalHead(IminCallback { model ->
-            Log.d("asd", "TH Model No: $model")
-        })
-
     }
 }
 

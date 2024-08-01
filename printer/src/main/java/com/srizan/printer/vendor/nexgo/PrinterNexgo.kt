@@ -1,24 +1,20 @@
-package com.srizan.printer.nexgo
+package com.srizan.printer.vendor.nexgo
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Typeface
-import android.util.Log
 import com.nexgo.oaf.apiv3.APIProxy
 import com.nexgo.oaf.apiv3.DeviceEngine
 import com.nexgo.oaf.apiv3.SdkResult
-import com.nexgo.oaf.apiv3.device.printer.AlignEnum
-import com.nexgo.oaf.apiv3.device.printer.BarcodeFormatEnum
 import com.nexgo.oaf.apiv3.device.printer.LineOptionEntity
 import com.nexgo.oaf.apiv3.device.printer.Printer
-import com.sr.SrPrinter
 import com.srizan.printer.AbstractPrinter
-import com.srizan.printer.Alignment
-import com.srizan.printer.BarcodeSymbology
-import com.srizan.printer.BarcodeTextPosition
-import com.srizan.printer.PrinterStatus
-import com.srizan.printer.TableConfig
-import com.srizan.printer.TextConfig
+import com.srizan.printer.config.BarcodeConfig
+import com.srizan.printer.config.QRCodeConfig
+import com.srizan.printer.config.TableConfig
+import com.srizan.printer.config.TextConfig
+import com.srizan.printer.enums.PrinterAlignment
+import com.srizan.printer.enums.PrinterStatus
 
 internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
 
@@ -45,7 +41,7 @@ internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
         printer?.appendPrnStr(
             text,
             config.size,
-            config.alignment.getNexgoAlignEnum(),
+            config.printerAlignment.getNexgoAlignEnum(),
             lineOptionEntity
         )
     }
@@ -68,33 +64,33 @@ internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
         printer?.setLetterSpacing(lineCount)
     }
 
-    override fun printQRCode(data: String, size: Int, alignment: Alignment) {
-        printer?.appendQRcode(data, size.times(25), alignment.getNexgoAlignEnum())
+    override fun printQRCode(data: String, qrCodeConfig: QRCodeConfig) {
+        printer?.appendQRcode(
+            data,
+            qrCodeConfig.size.times(25),
+            qrCodeConfig.printerAlignment.getNexgoAlignEnum()
+        )
     }
 
     override fun printBarcode(
         data: String,
-        height: Int,
-        width: Int,
-        alignment: Alignment,
-        symbology: BarcodeSymbology,
-        textPosition: BarcodeTextPosition
+        barcodeConfig: BarcodeConfig
     ) {
 
         printer?.appendBarcode(
             data,
-            height,
-            0,
-            width,
-            symbology.getNexgoSymbology(),
-            alignment.getNexgoAlignEnum()
+            barcodeConfig.height,
+            0,//margin
+            barcodeConfig.width,
+            barcodeConfig.symbology.getNexgoSymbology(),
+            barcodeConfig.printerAlignment.getNexgoAlignEnum()
         )
         startPrint()
 
     }
 
-    override fun printImage(bitmap: Bitmap, alignment: Alignment) {
-        printer?.appendImage(bitmap, alignment.getNexgoAlignEnum())
+    override fun printImage(bitmap: Bitmap, printerAlignment: PrinterAlignment) {
+        printer?.appendImage(bitmap, printerAlignment.getNexgoAlignEnum())
     }
 
     override fun getStatus(): PrinterStatus {
@@ -110,8 +106,6 @@ internal class PrinterNexgo(applicationContext: Context) : AbstractPrinter {
     }
 
     fun startPrint() {
-        printer?.startPrint(true) { n ->
-            Log.d("asd", "startPrint: $n")
-        }
+        printer?.startPrint(true) { n -> }
     }
 }

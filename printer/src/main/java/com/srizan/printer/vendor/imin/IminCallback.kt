@@ -1,4 +1,4 @@
-package com.srizan.printer.imin
+package com.srizan.printer.vendor.imin
 
 import android.util.Log
 import com.imin.printer.INeoPrinterCallback

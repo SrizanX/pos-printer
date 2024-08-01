@@ -3,13 +3,27 @@
 package com.srizan.printer
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
-import com.srizan.printer.imin.PrinterImin
-import com.srizan.printer.nexgo.PrinterNexgo
-import com.srizan.printer.printon.PrinterPrinton
-import com.srizan.printer.sunmi.PrinterSunmi
+import com.srizan.printer.config.BarcodeConfig
+import com.srizan.printer.config.QRCodeConfig
+import com.srizan.printer.config.TableConfig
+import com.srizan.printer.config.TextConfig
+import com.srizan.printer.enums.PrinterAlignment
+import com.srizan.printer.enums.BarcodeSymbology
+import com.srizan.printer.enums.PrinterDevice
+import com.srizan.printer.enums.PrinterStatus
+import com.srizan.printer.vendor.imin.PrinterImin
+import com.srizan.printer.vendor.nexgo.PrinterNexgo
+import com.srizan.printer.vendor.printon.PrinterPrinton
+import com.srizan.printer.vendor.sunmi.PrinterSunmi
+
+
+const val printer_key = "printer"
+val Context.prefs: SharedPreferences
+    get() = this.getSharedPreferences("printer_pref", Context.MODE_PRIVATE)
 
 object Printer {
     private lateinit var printer: AbstractPrinter
@@ -20,9 +34,13 @@ object Printer {
         applicationContext: Context,
     ) {
         this.applicationContext = applicationContext
+
+        val device = applicationContext.prefs.getString(printer_key, PrinterDevice.NONE.name)
+        device?.let { selectPrinter(PrinterDevice.valueOf(it)) }
     }
 
     fun selectPrinter(printerDevice: PrinterDevice) {
+        applicationContext.prefs.edit().putString(printer_key, printerDevice.name).apply()
         when (printerDevice) {
             PrinterDevice.SUNMI -> {
                 printer = PrinterSunmi(applicationContext)
@@ -43,9 +61,12 @@ object Printer {
                 try {
                     printer = PrinterNexgo(applicationContext)
                     selectedPrinter = printerDevice
-                } catch (thr: Throwable) {
-                    thr.printStackTrace()
+                } catch (throwable: Throwable) {
+                    throwable.printStackTrace()
                 }
+            }
+
+            PrinterDevice.NONE -> {
             }
         }
     }
@@ -62,23 +83,19 @@ object Printer {
         printer.printNewLine(lineCount)
     }
 
-    fun printQRCode(data: String, size: Int = 6, alignment: Alignment = Alignment.CENTER) {
-        printer.printQRCode(data, size, alignment)
+    fun printQRCode(data: String, qrCodeConfig: QRCodeConfig) {
+        printer.printQRCode(data, qrCodeConfig)
     }
 
     fun printBarcode(
         data: String,
-        height: Int,
-        width: Int,
-        alignment: Alignment,
-        symbology: BarcodeSymbology,
-        textPosition: BarcodeTextPosition
+        barcodeConfig: BarcodeConfig
     ) {
-        printer.printBarcode(data, height, width, alignment, symbology, textPosition)
+        printer.printBarcode(data, barcodeConfig)
     }
 
-    fun printImage(bitmap: Bitmap, alignment: Alignment) {
-        printer.printImage(bitmap, alignment)
+    fun printImage(bitmap: Bitmap, printerAlignment: PrinterAlignment) {
+        printer.printImage(bitmap, printerAlignment)
     }
 
     fun isOperational() = getStatus() == PrinterStatus.NORMAL
@@ -102,20 +119,30 @@ object Printer {
 
     fun test(logo: Bitmap?) {
         val defaultTextConfig = TextConfig()
-        val labelTextConfig = TextConfig(size = 26, alignment = Alignment.CENTER, isBold = true)
+        val labelTextConfig =
+            TextConfig(size = 26, printerAlignment = PrinterAlignment.CENTER, isBold = true)
 
         printText("Bengali\n", labelTextConfig)
         printText("যাত্রী সার্ভিসেস লিমিটেড\n", defaultTextConfig)
 
         printText("\nAlignment\n", labelTextConfig)
-        printText("Left\n", defaultTextConfig.copy(alignment = Alignment.LEFT))
-        printText("Center\n", defaultTextConfig.copy(alignment = Alignment.CENTER))
-        printText("Right\n", defaultTextConfig.copy(alignment = Alignment.RIGHT))
+        printText(
+            "যাত্রী সার্ভিসেস লিমিটেড\n",
+            defaultTextConfig.copy(printerAlignment = PrinterAlignment.LEFT)
+        )
+        printText(
+            "যাত্রী সার্ভিসেস লিমিটেড\n",
+            defaultTextConfig.copy(printerAlignment = PrinterAlignment.CENTER)
+        )
+        printText(
+            "যাত্রী সার্ভিসেস লিমিটেড\n",
+            defaultTextConfig.copy(printerAlignment = PrinterAlignment.RIGHT)
+        )
 
 
         printText("\nFont Sizes\n", labelTextConfig)
-        (24..40 step 2).forEach { n ->
-            printText("Font SIze: $n\n", defaultTextConfig.copy(size = n))
+        (24..40 step 1).forEach { n ->
+            printText("যাত্রী সার্ভিসেস লিমিটেড - $n\n", defaultTextConfig.copy(size = n))
         }
 
 
@@ -126,9 +153,11 @@ object Printer {
             sizeArray = intArrayOf(24, 24)
         )
         printTable(arrayOf("Item", "Price"), tableConfig2Col, defaultTextConfig)
-        printTable(arrayOf("A", "$1"), tableConfig2Col, defaultTextConfig)
-        printTable(arrayOf("B", "$2"), tableConfig2Col, defaultTextConfig)
-        printTable(arrayOf("C", "$3"), tableConfig2Col, defaultTextConfig)
+        printTable(arrayOf("ক", "৳১০০"), tableConfig2Col, defaultTextConfig)
+        printTable(arrayOf("খ", "৳২০০"), tableConfig2Col, defaultTextConfig)
+        printTable(arrayOf("গ", "৳৩০০"), tableConfig2Col, defaultTextConfig)
+        printTable(arrayOf("ঘ", "৳৪০০"), tableConfig2Col, defaultTextConfig)
+        printTable(arrayOf("ঙ", "৳৫০০"), tableConfig2Col, defaultTextConfig)
 
         printText("\nTable Print: 3 Columns\n", labelTextConfig)
 
@@ -151,19 +180,26 @@ object Printer {
         printTable(
             arrayOf("C", "3", "$30"), tableConfig3Col, defaultTextConfig
         )
+        printNewLine(1)
 
 
         logo?.let {
             printText("\nImage\n", labelTextConfig)
-            printImage(logo, Alignment.CENTER)
+            printImage(logo, PrinterAlignment.CENTER)
+            printNewLine(1)
         }
 
         printText("\nQR Code\n", labelTextConfig)
-        printQRCode("Jatri Services Ltd.", 8)
+        printQRCode("Jatri Services Ltd.", QRCodeConfig())
+        printNewLine(1)
 
-        if (printer is PrinterNexgo) {
-            (printer as PrinterNexgo).startPrint()
-        }
+        printText("\nBarcode\n", labelTextConfig)
+
+        printBarcode("123456789012", BarcodeConfig(symbology = BarcodeSymbology.CODE_128))
+
+        printNewLine(3)
+
+        (printer as? PrinterNexgo)?.startPrint()
     }
 
 }

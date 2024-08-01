@@ -1,4 +1,4 @@
-package com.srizan.printer.printon
+package com.srizan.printer.vendor.printon
 
 import com.sr.SrPrinter
 

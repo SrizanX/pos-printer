@@ -35,9 +35,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stepSize="1"
-            android:value="8"
+            android:value="6"
             android:valueFrom="1"
-            android:valueTo="16" />
+            android:valueTo="11" />
 
         <include
             android:id="@+id/layout_alignment"

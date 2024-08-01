@@ -1,4 +1,4 @@
-package com.srizan.printer.sunmi
+package com.srizan.printer.vendor.sunmi
 
 import android.app.Application
 import android.content.Context
