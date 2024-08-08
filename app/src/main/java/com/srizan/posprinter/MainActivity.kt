@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun printSample() {
-        val drawable = AppCompatResources.getDrawable(this, R.drawable.ic_android)
+        val drawable = AppCompatResources.getDrawable(this, R.drawable.logo_jatri_bg_white)
         val logo = drawable?.toBitmapOrNull()
         if (Printer.isOperational()) Printer.test(logo)
     }

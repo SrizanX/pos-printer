@@ -2,7 +2,6 @@ package com.srizan.printer.vendor.imin
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import com.imin.printer.PrinterHelper
 import com.srizan.printer.AbstractPrinter
 import com.srizan.printer.config.BarcodeConfig
@@ -11,7 +10,6 @@ import com.srizan.printer.config.TableConfig
 import com.srizan.printer.config.TextConfig
 import com.srizan.printer.enums.PrinterAlignment
 import com.srizan.printer.enums.PrinterStatus
-import com.srizan.printer.log
 
 internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
     private var printer = PrinterHelper.getInstance()
@@ -24,6 +22,15 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
             serial?.let { this.serialNo = it }
         })
 
+    }
+
+    fun enterPrinterBuffer(isEnabled: Boolean) {
+        printer.enterPrinterBuffer(isEnabled)
+    }
+
+    fun commitAndExitPrinterBuffer() {
+        printer.commitPrinterBuffer()
+        printer.exitPrinterBuffer(true)
     }
 
     override fun printText(text: String, config: TextConfig) {

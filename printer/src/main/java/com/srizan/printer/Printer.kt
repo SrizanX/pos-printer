@@ -11,8 +11,8 @@ import com.srizan.printer.config.BarcodeConfig
 import com.srizan.printer.config.QRCodeConfig
 import com.srizan.printer.config.TableConfig
 import com.srizan.printer.config.TextConfig
-import com.srizan.printer.enums.PrinterAlignment
 import com.srizan.printer.enums.BarcodeSymbology
+import com.srizan.printer.enums.PrinterAlignment
 import com.srizan.printer.enums.PrinterDevice
 import com.srizan.printer.enums.PrinterStatus
 import com.srizan.printer.vendor.imin.PrinterImin
@@ -28,7 +28,7 @@ val Context.prefs: SharedPreferences
 object Printer {
     private lateinit var printer: AbstractPrinter
     private lateinit var applicationContext: Context
-    lateinit var selectedPrinter: PrinterDevice
+    var selectedPrinter: PrinterDevice = PrinterDevice.NONE
 
     fun initializePrinter(
         applicationContext: Context,
@@ -67,6 +67,7 @@ object Printer {
             }
 
             PrinterDevice.NONE -> {
+                selectedPrinter = PrinterDevice.NONE
             }
         }
     }
@@ -118,6 +119,9 @@ object Printer {
     }
 
     fun test(logo: Bitmap?) {
+
+        (printer as? PrinterImin)?.enterPrinterBuffer(false)
+
         val defaultTextConfig = TextConfig()
         val labelTextConfig =
             TextConfig(size = 26, printerAlignment = PrinterAlignment.CENTER, isBold = true)
@@ -191,14 +195,13 @@ object Printer {
 
         printText("\nQR Code\n", labelTextConfig)
         printQRCode("Jatri Services Ltd.", QRCodeConfig())
-        printNewLine(1)
-
-        printText("\nBarcode\n", labelTextConfig)
-
-        printBarcode("123456789012", BarcodeConfig(symbology = BarcodeSymbology.CODE_128))
-
         printNewLine(3)
 
+//        printText("\nBarcode\n", labelTextConfig)
+//        printBarcode("123456789012", BarcodeConfig(symbology = BarcodeSymbology.CODE_128))
+//        printNewLine(3)
+
+        (printer as? PrinterImin)?.commitAndExitPrinterBuffer()
         (printer as? PrinterNexgo)?.startPrint()
     }
 
@@ -207,10 +210,6 @@ object Printer {
 
 fun Context.showToastMessage(resId: Int) {
     Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
-}
-
-fun log(msg: String, tag: String = "asd") {
-    if (BuildConfig.DEBUG) Log.d(tag, msg)
 }
 
 fun ifPrinterOperational(block: () -> Unit) {
