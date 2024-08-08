@@ -111,7 +111,7 @@ object Printer {
             PrinterStatus.OUT_OF_PAPER -> applicationContext.showToastMessage(R.string.printer_status_out_of_paper)
             PrinterStatus.OPEN_COVER -> applicationContext.showToastMessage(R.string.printer_status_cover_is_not_closed)
         }
-        return printer.getStatus()
+        return status
     }
 
     fun getDeviceSerialNumber(): String? {
