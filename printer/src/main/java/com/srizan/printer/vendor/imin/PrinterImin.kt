@@ -2,6 +2,7 @@ package com.srizan.printer.vendor.imin
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.imin.printer.InitPrinterCallback
 import com.imin.printer.PrinterHelper
 import com.srizan.printer.AbstractPrinter
 import com.srizan.printer.config.BarcodeConfig
@@ -17,15 +18,27 @@ internal class PrinterImin(applicationContext: Context) : AbstractPrinter {
     private var serialNo: String = ""
 
     init {
-        printer.initPrinterService(applicationContext)
-        printer.getPrinterSerialNumber(IminCallback { serial ->
-            serial?.let { this.serialNo = it }
-        })
+        printer.initPrinterService(applicationContext, object : InitPrinterCallback {
+            override fun onConnected() {
+                printer.getPrinterSerialNumber(IminCallback { serial ->
+                    serial?.let { this@PrinterImin.serialNo = it }
 
+                })
+            }
+
+            override fun onDisconnected() {}
+        })
     }
 
     fun enterPrinterBuffer(isEnabled: Boolean) {
         printer.enterPrinterBuffer(isEnabled)
+    }
+
+    /**
+     * @param speed Available speed: [30, 40, 50, 60, 80, 100]
+     * */
+    fun setPrinterSpeed(speed: Int) {
+        printer.printerSpeed = speed
     }
 
     fun commitAndExitPrinterBuffer() {

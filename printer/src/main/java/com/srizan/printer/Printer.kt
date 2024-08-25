@@ -5,7 +5,6 @@ package com.srizan.printer
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
-import android.util.Log
 import android.widget.Toast
 import com.srizan.printer.config.BarcodeConfig
 import com.srizan.printer.config.QRCodeConfig
@@ -120,7 +119,10 @@ object Printer {
 
     fun test(logo: Bitmap?) {
 
-        (printer as? PrinterImin)?.enterPrinterBuffer(false)
+        (printer as? PrinterImin)?.let {
+            it.enterPrinterBuffer(false)
+            it.setPrinterSpeed(100)
+        }
 
         val defaultTextConfig = TextConfig()
         val labelTextConfig =
@@ -197,9 +199,9 @@ object Printer {
         printQRCode("Jatri Services Ltd.", QRCodeConfig())
         printNewLine(3)
 
-//        printText("\nBarcode\n", labelTextConfig)
-//        printBarcode("123456789012", BarcodeConfig(symbology = BarcodeSymbology.CODE_128))
-//        printNewLine(3)
+        printText("\nBarcode\n", labelTextConfig)
+        printBarcode("123456789012", BarcodeConfig(symbology = BarcodeSymbology.CODE_128))
+        printNewLine(3)
 
         (printer as? PrinterImin)?.commitAndExitPrinterBuffer()
         (printer as? PrinterNexgo)?.startPrint()
