@@ -279,7 +279,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.menu_get_printer_serial -> {
-                Printer.getDeviceSerialNumber()?.let { showToast(it) }
+                ifPrinterOperational {
+                    Printer.getDeviceSerialNumber()?.let { showToast(it) }
+                }
                 true
             }
 

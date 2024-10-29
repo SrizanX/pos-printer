@@ -1,9 +1,11 @@
 package com.srizan.printer.vendor.sunmi
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.RemoteException
+import android.provider.Settings
 import android.util.Log
 import com.srizan.printer.AbstractPrinter
 import com.srizan.printer.config.BarcodeConfig
@@ -167,23 +169,18 @@ internal class PrinterSunmi(private val applicationContext: Context) : AbstractP
         return if (isEnable) WoyouConsts.ENABLE else WoyouConsts.DISABLE
     }
 
+    @SuppressLint("PrivateApi", "HardwareIds")
     override fun getDeviceSerialNumber(): String? {
         val classObj = Class.forName("android.os.SystemProperties")
         val method = classObj.getMethod("get", String::class.java)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            try {
-                method.invoke(classObj, "ro.sunmi.serial") as String
-            } catch (e: Exception) {
-                "ERROR_SERIAL_NOT_FOUND"
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Build.getSerial()
+        val sunmiSerial: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            /** For Sunmi V2s, P2se (Android 11) **/
+            method.invoke(classObj, "ro.sunmi.serial") as String
         } else {
-            try {
-                method.invoke(classObj, "ro.serialno") as String
-            } catch (e: Exception) {
-                "ERROR_SERIAL_NOT_FOUND"
-            }
+            /** For Sunmi V2 Pro */
+            method.invoke(classObj, "ro.serialno") as String
         }
+        val androidSerial = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+        return sunmiSerial.ifEmpty { androidSerial }
     }
 }

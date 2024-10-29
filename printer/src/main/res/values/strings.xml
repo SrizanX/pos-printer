@@ -5,4 +5,5 @@
     <string name="printer_status_out_of_paper">Printer is out of paper.</string>
     <string name="printer_status_overheating">Printer is overheating.</string>
     <string name="printer_status_error_unknown">Unknown error occurred with printer.</string>
+    <string name="printer_status_uninitialized">Printer is not initialized.</string>
 </resources>

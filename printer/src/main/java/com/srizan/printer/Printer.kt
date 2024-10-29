@@ -101,7 +101,7 @@ object Printer {
     fun isOperational() = getStatus() == PrinterStatus.NORMAL
 
     fun getStatus(): PrinterStatus {
-        val status = printer.getStatus()
+        val status = if (::printer.isInitialized) printer.getStatus() else PrinterStatus.UNINITIALIZED
         when (status) {
             PrinterStatus.NORMAL -> {}
             PrinterStatus.DISCONNECTED -> applicationContext.showToastMessage(R.string.printer_status_disconnected)
@@ -109,6 +109,7 @@ object Printer {
             PrinterStatus.OVERHEATED -> applicationContext.showToastMessage(R.string.printer_status_overheating)
             PrinterStatus.OUT_OF_PAPER -> applicationContext.showToastMessage(R.string.printer_status_out_of_paper)
             PrinterStatus.OPEN_COVER -> applicationContext.showToastMessage(R.string.printer_status_cover_is_not_closed)
+            PrinterStatus.UNINITIALIZED -> applicationContext.showToastMessage(R.string.printer_status_uninitialized)
         }
         return status
     }
@@ -214,6 +215,6 @@ fun Context.showToastMessage(resId: Int) {
     Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
 }
 
-fun ifPrinterOperational(block: () -> Unit) {
-    if (Printer.isOperational()) block()
+fun ifPrinterOperational(print: () -> Unit) {
+    if (Printer.isOperational()) print()
 }
