@@ -25,7 +25,7 @@ val Context.prefs: SharedPreferences
     get() = this.getSharedPreferences("printer_pref", Context.MODE_PRIVATE)
 
 object Printer {
-    private lateinit var printer: AbstractPrinter
+    private var printer: AbstractPrinter? = null
     private lateinit var applicationContext: Context
     var selectedPrinter: PrinterDevice = PrinterDevice.NONE
 
@@ -62,46 +62,50 @@ object Printer {
                     selectedPrinter = printerDevice
                 } catch (throwable: Throwable) {
                     throwable.printStackTrace()
+                    clearPrinter()
                 }
             }
 
-            PrinterDevice.NONE -> {
-                selectedPrinter = PrinterDevice.NONE
-            }
+            PrinterDevice.NONE -> clearPrinter()
         }
     }
 
+    private fun clearPrinter() {
+        printer = null
+        selectedPrinter = PrinterDevice.NONE
+    }
+
     fun printText(text: String, config: TextConfig) {
-        printer.printText(text, config)
+        printer?.printText(text, config)
     }
 
     fun printTable(columns: Array<String>, tableConfig: TableConfig, textConfig: TextConfig) {
-        printer.printTable(columns, tableConfig, textConfig)
+        printer?.printTable(columns, tableConfig, textConfig)
     }
 
     fun printNewLine(lineCount: Int) {
-        printer.printNewLine(lineCount)
+        printer?.printNewLine(lineCount)
     }
 
     fun printQRCode(data: String, qrCodeConfig: QRCodeConfig) {
-        printer.printQRCode(data, qrCodeConfig)
+        printer?.printQRCode(data, qrCodeConfig)
     }
 
     fun printBarcode(
         data: String,
         barcodeConfig: BarcodeConfig
     ) {
-        printer.printBarcode(data, barcodeConfig)
+        printer?.printBarcode(data, barcodeConfig)
     }
 
     fun printImage(bitmap: Bitmap, printerAlignment: PrinterAlignment) {
-        printer.printImage(bitmap, printerAlignment)
+        printer?.printImage(bitmap, printerAlignment)
     }
 
     fun isOperational() = getStatus() == PrinterStatus.NORMAL
 
     fun getStatus(): PrinterStatus {
-        val status = if (::printer.isInitialized) printer.getStatus() else PrinterStatus.UNINITIALIZED
+        val status = printer?.getStatus() ?: PrinterStatus.UNINITIALIZED
         when (status) {
             PrinterStatus.NORMAL -> {}
             PrinterStatus.DISCONNECTED -> applicationContext.showToastMessage(R.string.printer_status_disconnected)
@@ -115,7 +119,7 @@ object Printer {
     }
 
     fun getDeviceSerialNumber(): String? {
-        return printer.getDeviceSerialNumber()
+        return printer?.getDeviceSerialNumber()
     }
 
     fun test(logo: Bitmap?) {
