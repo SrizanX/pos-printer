@@ -41,6 +41,7 @@ dependencies {
     implementation(files("libs/printer-nexgo.aar"))
     implementation(libs.printer.sunmi)
     implementation(libs.printer.imin)
+    implementation(libs.dantsu.escpos)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
