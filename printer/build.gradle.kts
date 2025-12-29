@@ -43,10 +43,6 @@ kotlin {
 
 dependencies {
     api(projects.printerCore)
-    implementation(projects.printerSunmi)
-    implementation(projects.printerImin)
-    implementation(projects.printerNexgo)
-    implementation(projects.printerPrinton)
     implementation(libs.dantsu.escpos)
 
     testImplementation(libs.junit)

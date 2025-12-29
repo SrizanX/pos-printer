@@ -241,13 +241,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showPrinterSelectorDialog() {
+        val availablePrinters = Printer.getAvailablePrinters().toList()
+        
+        if (availablePrinters.isEmpty()) {
+            AlertDialog.Builder(this)
+                .setTitle("No Printers Available")
+                .setMessage("No printer modules are included in the app. Please add vendor dependencies (e.g., implementation(projects.printerSunmi))")
+                .setPositiveButton("OK", null)
+                .show()
+            return
+        }
+        
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Select your device").setNegativeButton("Close") { _, _ -> }
             .setSingleChoiceItems(
-                PrinterDevice.entries.map { it.name }.toTypedArray(),
-                PrinterDevice.entries.indexOf(Printer.selectedPrinter)
+                availablePrinters.map { it.name }.toTypedArray(),
+                availablePrinters.indexOf(Printer.selectedPrinter)
             ) { _, index ->
-                onPrinterSelected(PrinterDevice.entries[index])
+                onPrinterSelected(availablePrinters[index])
 
             }
 

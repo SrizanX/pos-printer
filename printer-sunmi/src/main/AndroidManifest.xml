@@ -5,4 +5,17 @@
         <package android:name="woyou.aidlservice.jiuiv5" />
     </queries>
 
+    <application>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge"
+            xmlns:tools="http://schemas.android.com/tools">
+            <meta-data
+                android:name="com.srizan.printer.sunmi.SunmiPrinterInitializer"
+                android:value="androidx.startup" />
+        </provider>
+    </application>
+
 </manifest>

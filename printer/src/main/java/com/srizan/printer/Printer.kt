@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.widget.Toast
 import com.srizan.printer.core.AbstractPrinter
+import com.srizan.printer.core.PrinterRegistry
 import com.srizan.printer.core.config.BarcodeConfig
 import com.srizan.printer.core.config.QRCodeConfig
 import com.srizan.printer.core.config.TableConfig
@@ -15,10 +16,6 @@ import com.srizan.printer.core.enums.BarcodeSymbology
 import com.srizan.printer.core.enums.PrinterAlignment
 import com.srizan.printer.core.enums.PrinterDevice
 import com.srizan.printer.core.enums.PrinterStatus
-import com.srizan.printer.imin.PrinterImin
-import com.srizan.printer.nexgo.PrinterNexgo
-import com.srizan.printer.printon.PrinterPrinton
-import com.srizan.printer.sunmi.PrinterSunmi
 
 
 const val printer_key = "printer"
@@ -41,34 +38,28 @@ object Printer {
 
     fun selectPrinter(printerDevice: PrinterDevice) {
         applicationContext.prefs.edit().putString(printer_key, printerDevice.name).apply()
-        when (printerDevice) {
-            PrinterDevice.SUNMI -> {
-                printer = PrinterSunmi(applicationContext)
-                selectedPrinter = printerDevice
-            }
-
-            PrinterDevice.PRINTON -> {
-                printer = PrinterPrinton(applicationContext)
-                selectedPrinter = printerDevice
-            }
-
-            PrinterDevice.IMIN -> {
-                printer = PrinterImin(applicationContext)
-                selectedPrinter = printerDevice
-            }
-
-            PrinterDevice.NEXGO -> {
-                try {
-                    printer = PrinterNexgo(applicationContext)
-                    selectedPrinter = printerDevice
-                } catch (throwable: Throwable) {
-                    throwable.printStackTrace()
-                    clearPrinter()
-                }
-            }
-
-            PrinterDevice.NONE -> clearPrinter()
+        
+        if (printerDevice == PrinterDevice.NONE) {
+            clearPrinter()
+            return
         }
+        
+        val factory = PrinterRegistry.getFactory(printerDevice)
+        if (factory != null) {
+            try {
+                printer = factory.createPrinter(applicationContext)
+                selectedPrinter = printerDevice
+            } catch (throwable: Throwable) {
+                throwable.printStackTrace()
+                clearPrinter()
+            }
+        } else {
+            clearPrinter()
+        }
+    }
+    
+    fun getAvailablePrinters(): Set<PrinterDevice> {
+        return PrinterRegistry.getAvailableDevices()
     }
 
     private fun clearPrinter() {
@@ -124,12 +115,6 @@ object Printer {
     }
 
     fun test(logo: Bitmap?) {
-
-        (printer as? PrinterImin)?.let {
-            it.enterPrinterBuffer(false)
-            it.setPrinterSpeed(100)
-        }
-
         val defaultTextConfig = TextConfig()
         val labelTextConfig =
             TextConfig(size = 26, printerAlignment = PrinterAlignment.CENTER, isBold = true)
@@ -208,9 +193,6 @@ object Printer {
         printText("\nBarcode\n", labelTextConfig)
         printBarcode("123456789012", BarcodeConfig(symbology = BarcodeSymbology.CODE_128))
         printNewLine(3)
-
-        (printer as? PrinterImin)?.commitAndExitPrinterBuffer()
-        (printer as? PrinterNexgo)?.startPrint()
     }
 
 }

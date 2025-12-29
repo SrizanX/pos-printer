@@ -14,7 +14,8 @@ class NexgoPrinterFactory : PrinterFactory {
     }
     
     companion object {
-        init {
+        @JvmStatic
+        fun register() {
             PrinterRegistry.registerFactory(NexgoPrinterFactory())
         }
     }

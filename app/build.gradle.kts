@@ -45,7 +45,12 @@ kotlin {
 
 dependencies {
     implementation(projects.printer)
-
+    
+    // Add only the vendor implementations you need
+    implementation(projects.printerSunmi)
+    implementation(projects.printerImin)
+    implementation(projects.printerNexgo)
+    implementation(projects.printerPrinton)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

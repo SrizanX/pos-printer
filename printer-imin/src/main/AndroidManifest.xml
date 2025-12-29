@@ -6,4 +6,17 @@
             <action android:name="com.neo.printer.sdk.core.ApiAdapterManager.NeoPrinterService" />
         </intent>
     </queries>
+
+    <application>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge"
+            xmlns:tools="http://schemas.android.com/tools">
+            <meta-data
+                android:name="com.srizan.printer.imin.IminPrinterInitializer"
+                android:value="androidx.startup" />
+        </provider>
+    </application>
 </manifest>

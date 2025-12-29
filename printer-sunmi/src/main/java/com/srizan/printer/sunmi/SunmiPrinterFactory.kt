@@ -14,7 +14,8 @@ class SunmiPrinterFactory : PrinterFactory {
     }
     
     companion object {
-        init {
+        @JvmStatic
+        fun register() {
             PrinterRegistry.registerFactory(SunmiPrinterFactory())
         }
     }

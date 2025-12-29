@@ -14,7 +14,8 @@ class PrintonPrinterFactory : PrinterFactory {
     }
     
     companion object {
-        init {
+        @JvmStatic
+        fun register() {
             PrinterRegistry.registerFactory(PrintonPrinterFactory())
         }
     }
