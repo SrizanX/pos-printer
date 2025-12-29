@@ -13,6 +13,7 @@ sunmiPrinter = "1.0.24"
 dantsu-escpos = "3.4.0"
 iminPrinter = "V2.0.0.17"
 jetbrainsKotlinJvm = "2.2.0"
+androidxStartup = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -23,6 +24,8 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "androidxStartup" }
 
 printer-imin = { module = "com.github.iminsoftware:IminPrinterLibrary", version.ref = "iminPrinter" }
 printer-sunmi = { module = "com.sunmi:printerlibrary", version.ref = "sunmiPrinter" }

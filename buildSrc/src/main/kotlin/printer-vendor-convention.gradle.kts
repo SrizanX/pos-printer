@@ -1,4 +1,4 @@
-import org.gradle.kotlin.dsl.dependencies
+import com.android.build.gradle.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -6,13 +6,11 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-android {
-    namespace = "com.srizan.printer"
+configure<LibraryExtension> {
     compileSdk = 36
 
     defaultConfig {
         minSdk = 19
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -21,17 +19,15 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    buildFeatures {
-        buildConfig = true
     }
 }
 
@@ -42,14 +38,10 @@ kotlin {
 }
 
 dependencies {
-    api(projects.printerCore)
-    implementation(projects.printerSunmi)
-    implementation(projects.printerImin)
-    implementation(projects.printerNexgo)
-    implementation(projects.printerPrinton)
-    implementation(libs.dantsu.escpos)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    "implementation"(project(":printer-core"))
+    "implementation"("androidx.startup:startup-runtime:1.2.0")
+    
+    "testImplementation"("junit:junit:4.13.2")
+    "androidTestImplementation"("androidx.test.ext:junit:1.2.1")
+    "androidTestImplementation"("androidx.test.espresso:espresso-core:3.6.1")
 }
