@@ -3,7 +3,7 @@ package com.srizan.printer.printon
 import android.content.Context
 import android.graphics.Bitmap
 import com.sr.SrPrinter
-import com.srizan.printer.core.AbstractPrinter
+import com.srizan.printer.core.PrinterService
 import com.srizan.printer.core.config.BarcodeConfig
 import com.srizan.printer.core.config.QRCodeConfig
 import com.srizan.printer.core.config.TableConfig
@@ -11,7 +11,7 @@ import com.srizan.printer.core.config.TextConfig
 import com.srizan.printer.core.enums.PrinterAlignment
 import com.srizan.printer.core.enums.PrinterStatus
 
-class PrinterPrinton(applicationContext: Context) : AbstractPrinter {
+class PrinterServicePrinton(applicationContext: Context) : PrinterService {
     private val printer: SrPrinter = SrPrinter.getInstance(applicationContext)
 
     override fun printText(text: String, config: TextConfig) {

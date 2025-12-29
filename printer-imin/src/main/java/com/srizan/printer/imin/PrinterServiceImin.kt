@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.imin.printer.InitPrinterCallback
 import com.imin.printer.PrinterHelper
-import com.srizan.printer.core.AbstractPrinter
+import com.srizan.printer.core.PrinterService
 import com.srizan.printer.core.config.BarcodeConfig
 import com.srizan.printer.core.config.QRCodeConfig
 import com.srizan.printer.core.config.TableConfig
@@ -12,7 +12,7 @@ import com.srizan.printer.core.config.TextConfig
 import com.srizan.printer.core.enums.PrinterAlignment
 import com.srizan.printer.core.enums.PrinterStatus
 
-class PrinterImin(applicationContext: Context) : AbstractPrinter {
+class PrinterServiceImin(applicationContext: Context) : PrinterService {
     private var printer = PrinterHelper.getInstance()
 
     private var serialNo: String = ""
@@ -21,7 +21,7 @@ class PrinterImin(applicationContext: Context) : AbstractPrinter {
         printer.initPrinterService(applicationContext, object : InitPrinterCallback {
             override fun onConnected() {
                 printer.getPrinterSerialNumber(IminCallback { serial ->
-                    serial?.let { this@PrinterImin.serialNo = it }
+                    serial?.let { this@PrinterServiceImin.serialNo = it }
 
                 })
             }

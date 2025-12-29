@@ -1,5 +1,6 @@
 package com.srizan.posprinter
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputType
@@ -16,6 +17,7 @@ import com.srizan.posprinter.databinding.ActivityMainBinding
 import com.srizan.printer.Printer
 import com.srizan.printer.core.config.BarcodeConfig
 import com.srizan.printer.core.config.QRCodeConfig
+import com.srizan.printer.core.config.TableConfig
 import com.srizan.printer.core.config.TextConfig
 import com.srizan.printer.core.enums.PrinterAlignment
 import com.srizan.printer.core.enums.BarcodeSymbology
@@ -94,8 +96,9 @@ class MainActivity : AppCompatActivity() {
     private fun printText() {
         binding.layoutText.apply {
             val text = text.text.toString().trim()
-            val printerAlignment: PrinterAlignment = if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
-            else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
+            val printerAlignment: PrinterAlignment =
+                if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
+                else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
             val textConfig = TextConfig(
                 size = sliderTextSize.value.toInt(),
                 printerAlignment = printerAlignment,
@@ -114,8 +117,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun printQRCode() {
         binding.layoutQr.run {
-            val printerAlignment: PrinterAlignment = if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
-            else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
+            val printerAlignment: PrinterAlignment =
+                if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
+                else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
 
             ifPrinterOperational {
                 Printer.printQRCode(
@@ -131,8 +135,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun printBarCode() {
         binding.layoutBar.run {
-            val printerAlignment: PrinterAlignment = if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
-            else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
+            val printerAlignment: PrinterAlignment =
+                if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
+                else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
 
             val textPosition = if (rbBarTextPositionHidden.isChecked) BarcodeTextPosition.HIDDEN
             else if (rbBarTextPositionTop.isChecked) BarcodeTextPosition.TOP
@@ -162,7 +167,84 @@ class MainActivity : AppCompatActivity() {
     private fun printSample() {
         val drawable = AppCompatResources.getDrawable(this, R.drawable.logo_jatri_bg_white)
         val logo = drawable?.toBitmapOrNull()
-        if (Printer.isOperational()) Printer.test(logo)
+        if (Printer.isOperational()) testPrint(logo)
+    }
+
+    private fun testPrint(logo: Bitmap?) {
+        val defaultTextConfig = TextConfig()
+        val labelTextConfig =
+            TextConfig(size = 26, printerAlignment = PrinterAlignment.CENTER, isBold = true)
+
+        Printer.printText("Bengali\n", labelTextConfig)
+        Printer.printText("যাত্রী সার্ভিসেস লিমিটেড\n", defaultTextConfig)
+
+        Printer.printText("\nAlignment\n", labelTextConfig)
+        Printer.printText(
+            "যাত্রী সার্ভিসেস লিমিটেড\n",
+            defaultTextConfig.copy(printerAlignment = PrinterAlignment.LEFT)
+        )
+        Printer.printText(
+            "যাত্রী সার্ভিসেস লিমিটেড\n",
+            defaultTextConfig.copy(printerAlignment = PrinterAlignment.CENTER)
+        )
+        Printer.printText(
+            "যাত্রী সার্ভিসেস লিমিটেড\n",
+            defaultTextConfig.copy(printerAlignment = PrinterAlignment.RIGHT)
+        )
+
+        Printer.printText("\nFont Sizes\n", labelTextConfig)
+        (24..40 step 1).forEach { n ->
+            Printer.printText("যাত্রী সার্ভিসেস লিমিটেড - $n\n", defaultTextConfig.copy(size = n))
+        }
+
+        Printer.printText("\nTable Print: 2 Columns\n", labelTextConfig)
+        val tableConfig2Col = TableConfig(
+            weightArray = intArrayOf(1, 1),
+            alignmentArray = intArrayOf(0, 2),
+            sizeArray = intArrayOf(24, 24)
+        )
+        Printer.printTable(arrayOf("Item", "Price"), tableConfig2Col, defaultTextConfig)
+        Printer.printTable(arrayOf("ক", "৳১০০"), tableConfig2Col, defaultTextConfig)
+        Printer.printTable(arrayOf("খ", "৳২০০"), tableConfig2Col, defaultTextConfig)
+        Printer.printTable(arrayOf("গ", "৳৩০০"), tableConfig2Col, defaultTextConfig)
+        Printer.printTable(arrayOf("ঘ", "৳৪০০"), tableConfig2Col, defaultTextConfig)
+        Printer.printTable(arrayOf("ঙ", "৳৫০০"), tableConfig2Col, defaultTextConfig)
+
+        Printer.printText("\nTable Print: 3 Columns\n", labelTextConfig)
+
+        val tableConfig3Col = TableConfig(
+            weightArray = intArrayOf(1, 1, 1),
+            alignmentArray = intArrayOf(0, 1, 2),
+            sizeArray = intArrayOf(24, 24, 24)
+        )
+
+        Printer.printTable(
+            arrayOf("Item", "Qty", "Price"), tableConfig3Col, defaultTextConfig
+        )
+        Printer.printTable(
+            arrayOf("A", "1", "$10"), tableConfig3Col, defaultTextConfig
+        )
+        Printer.printTable(
+            arrayOf("B", "2", "$20"), tableConfig3Col, defaultTextConfig
+        )
+        Printer.printTable(
+            arrayOf("C", "3", "$30"), tableConfig3Col, defaultTextConfig
+        )
+        Printer.printNewLine(1)
+
+        logo?.let {
+            Printer.printText("\nImage\n", labelTextConfig)
+            Printer.printImage(logo, PrinterAlignment.CENTER)
+            Printer.printNewLine(1)
+        }
+
+        Printer.printText("\nQR Code\n", labelTextConfig)
+        Printer.printQRCode("Jatri Services Ltd.", QRCodeConfig())
+        Printer.printNewLine(3)
+
+        Printer.printText("\nBarcode\n", labelTextConfig)
+        Printer.printBarcode("123456789012", BarcodeConfig(symbology = BarcodeSymbology.CODE_128))
+        Printer.printNewLine(3)
     }
 
     private fun setupBarcodeEditText(symbology: BarcodeSymbology) {
@@ -242,7 +324,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPrinterSelectorDialog() {
         val availablePrinters = Printer.getAvailablePrinters().toList()
-        
+
         if (availablePrinters.isEmpty()) {
             AlertDialog.Builder(this)
                 .setTitle("No Printers Available")
@@ -251,7 +333,7 @@ class MainActivity : AppCompatActivity() {
                 .show()
             return
         }
-        
+
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Select your device").setNegativeButton("Close") { _, _ -> }
             .setSingleChoiceItems(

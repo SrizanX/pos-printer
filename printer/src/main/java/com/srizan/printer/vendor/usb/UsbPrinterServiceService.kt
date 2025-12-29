@@ -12,7 +12,7 @@ import com.dantsu.escposprinter.EscPosCharsetEncoding
 import com.dantsu.escposprinter.EscPosPrinter
 import com.dantsu.escposprinter.connection.usb.UsbConnection
 import com.dantsu.escposprinter.connection.usb.UsbPrintersConnections
-import com.srizan.printer.core.AbstractPrinter
+import com.srizan.printer.core.PrinterService
 import com.srizan.printer.core.config.BarcodeConfig
 import com.srizan.printer.core.config.QRCodeConfig
 import com.srizan.printer.core.config.TableConfig
@@ -22,7 +22,7 @@ import com.srizan.printer.core.enums.PrinterStatus
 import kotlin.properties.Delegates
 
 
-class UsbPrinterService(private val context: Context) : AbstractPrinter {
+class UsbPrinterServiceService(private val context: Context) : PrinterService {
 
 
     // Connection state enum

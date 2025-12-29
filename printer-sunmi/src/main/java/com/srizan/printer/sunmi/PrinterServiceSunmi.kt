@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.RemoteException
 import android.provider.Settings
 import android.util.Log
-import com.srizan.printer.core.AbstractPrinter
+import com.srizan.printer.core.PrinterService
 import com.srizan.printer.core.config.BarcodeConfig
 import com.srizan.printer.core.config.QRCodeConfig
 import com.srizan.printer.core.config.TableConfig
@@ -20,7 +20,7 @@ import com.sunmi.peripheral.printer.InnerPrinterManager
 import com.sunmi.peripheral.printer.SunmiPrinterService
 import com.sunmi.peripheral.printer.WoyouConsts
 
-class PrinterSunmi(private val applicationContext: Context) : AbstractPrinter {
+class PrinterServiceSunmi(private val applicationContext: Context) : PrinterService {
 
     var printer: SunmiPrinterService? = null
 

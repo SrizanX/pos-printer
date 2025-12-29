@@ -1,7 +1,7 @@
 package com.srizan.printer.imin
 
 import android.content.Context
-import com.srizan.printer.core.AbstractPrinter
+import com.srizan.printer.core.PrinterService
 import com.srizan.printer.core.PrinterFactory
 import com.srizan.printer.core.PrinterRegistry
 import com.srizan.printer.core.enums.PrinterDevice
@@ -9,8 +9,8 @@ import com.srizan.printer.core.enums.PrinterDevice
 class IminPrinterFactory : PrinterFactory {
     override fun getSupportedDevice() = PrinterDevice.IMIN
 
-    override fun createPrinter(context: Context): AbstractPrinter {
-        return PrinterImin(context)
+    override fun createPrinter(context: Context): PrinterService {
+        return PrinterServiceImin(context)
     }
 
     companion object {

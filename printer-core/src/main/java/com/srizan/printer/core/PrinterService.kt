@@ -8,7 +8,7 @@ import com.srizan.printer.core.config.TextConfig
 import com.srizan.printer.core.enums.PrinterAlignment
 import com.srizan.printer.core.enums.PrinterStatus
 
-interface AbstractPrinter {
+interface PrinterService {
     fun printText(text: String, config: TextConfig)
     fun printTable(columns: Array<String>, tableConfig: TableConfig, textConfig: TextConfig)
     fun printNewLine(lineCount: Int)

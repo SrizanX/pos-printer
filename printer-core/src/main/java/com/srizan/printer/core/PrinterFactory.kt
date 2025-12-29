@@ -5,5 +5,5 @@ import com.srizan.printer.core.enums.PrinterDevice
 
 interface PrinterFactory {
     fun getSupportedDevice(): PrinterDevice
-    fun createPrinter(context: Context): AbstractPrinter
+    fun createPrinter(context: Context): PrinterService
 }
