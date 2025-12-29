@@ -1,7 +1,7 @@
 package com.srizan.printer.vendor.usb
 
-import com.srizan.printer.config.TextConfig
-import com.srizan.printer.enums.PrinterAlignment
+import com.srizan.printer.core.config.TextConfig
+import com.srizan.printer.core.enums.PrinterAlignment
 
 
 object UsbTextConfigurationBuilder {

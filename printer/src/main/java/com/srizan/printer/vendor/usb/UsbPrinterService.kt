@@ -12,13 +12,13 @@ import com.dantsu.escposprinter.EscPosCharsetEncoding
 import com.dantsu.escposprinter.EscPosPrinter
 import com.dantsu.escposprinter.connection.usb.UsbConnection
 import com.dantsu.escposprinter.connection.usb.UsbPrintersConnections
-import com.srizan.printer.AbstractPrinter
-import com.srizan.printer.config.BarcodeConfig
-import com.srizan.printer.config.QRCodeConfig
-import com.srizan.printer.config.TableConfig
-import com.srizan.printer.config.TextConfig
-import com.srizan.printer.enums.PrinterAlignment
-import com.srizan.printer.enums.PrinterStatus
+import com.srizan.printer.core.AbstractPrinter
+import com.srizan.printer.core.config.BarcodeConfig
+import com.srizan.printer.core.config.QRCodeConfig
+import com.srizan.printer.core.config.TableConfig
+import com.srizan.printer.core.config.TextConfig
+import com.srizan.printer.core.enums.PrinterAlignment
+import com.srizan.printer.core.enums.PrinterStatus
 import kotlin.properties.Delegates
 
 

@@ -14,13 +14,13 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmapOrNull
 import com.srizan.posprinter.databinding.ActivityMainBinding
 import com.srizan.printer.Printer
-import com.srizan.printer.config.BarcodeConfig
-import com.srizan.printer.config.QRCodeConfig
-import com.srizan.printer.config.TextConfig
-import com.srizan.printer.enums.PrinterAlignment
-import com.srizan.printer.enums.BarcodeSymbology
-import com.srizan.printer.enums.BarcodeTextPosition
-import com.srizan.printer.enums.PrinterDevice
+import com.srizan.printer.core.config.BarcodeConfig
+import com.srizan.printer.core.config.QRCodeConfig
+import com.srizan.printer.core.config.TextConfig
+import com.srizan.printer.core.enums.PrinterAlignment
+import com.srizan.printer.core.enums.BarcodeSymbology
+import com.srizan.printer.core.enums.BarcodeTextPosition
+import com.srizan.printer.core.enums.PrinterDevice
 import com.srizan.printer.ifPrinterOperational
 
 class MainActivity : AppCompatActivity() {

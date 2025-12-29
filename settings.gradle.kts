@@ -29,3 +29,8 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "pos-printer"
 include(":app")
 include(":printer")
+include(":printer-core")
+include(":printer-sunmi")
+include(":printer-imin")
+include(":printer-nexgo")
+include(":printer-printon")

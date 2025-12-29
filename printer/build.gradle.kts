@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -10,7 +11,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 16
+        minSdk = 19
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -41,10 +42,11 @@ kotlin {
 }
 
 dependencies {
-    implementation(files("libs/printer-printon.aar"))
-    implementation(files("libs/printer-nexgo.aar"))
-    implementation(libs.printer.sunmi)
-    implementation(libs.printer.imin)
+    api(projects.printerCore)
+    implementation(projects.printerSunmi)
+    implementation(projects.printerImin)
+    implementation(projects.printerNexgo)
+    implementation(projects.printerPrinton)
     implementation(libs.dantsu.escpos)
 
     testImplementation(libs.junit)

@@ -6,18 +6,19 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.widget.Toast
-import com.srizan.printer.config.BarcodeConfig
-import com.srizan.printer.config.QRCodeConfig
-import com.srizan.printer.config.TableConfig
-import com.srizan.printer.config.TextConfig
-import com.srizan.printer.enums.BarcodeSymbology
-import com.srizan.printer.enums.PrinterAlignment
-import com.srizan.printer.enums.PrinterDevice
-import com.srizan.printer.enums.PrinterStatus
-import com.srizan.printer.vendor.imin.PrinterImin
-import com.srizan.printer.vendor.nexgo.PrinterNexgo
-import com.srizan.printer.vendor.printon.PrinterPrinton
-import com.srizan.printer.vendor.sunmi.PrinterSunmi
+import com.srizan.printer.core.AbstractPrinter
+import com.srizan.printer.core.config.BarcodeConfig
+import com.srizan.printer.core.config.QRCodeConfig
+import com.srizan.printer.core.config.TableConfig
+import com.srizan.printer.core.config.TextConfig
+import com.srizan.printer.core.enums.BarcodeSymbology
+import com.srizan.printer.core.enums.PrinterAlignment
+import com.srizan.printer.core.enums.PrinterDevice
+import com.srizan.printer.core.enums.PrinterStatus
+import com.srizan.printer.imin.PrinterImin
+import com.srizan.printer.nexgo.PrinterNexgo
+import com.srizan.printer.printon.PrinterPrinton
+import com.srizan.printer.sunmi.PrinterSunmi
 
 
 const val printer_key = "printer"
