@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    implementation(files("libs/printer-nexgo.aar"))
+    implementation("com.srizan.printer:nexgo-lib:1.0.0")
 }

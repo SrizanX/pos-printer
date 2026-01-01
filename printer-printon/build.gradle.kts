@@ -7,5 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(files("libs/printer-printon.aar"))
+    //implementation(files("libs/printer-printon.aar"))
+    implementation("com.srizan.printer:printon-lib:1.0.0")
+
 }

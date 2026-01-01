@@ -20,6 +20,14 @@ dependencyResolutionManagement {
             isAllowInsecureProtocol = true
             url = uri("https://jitpack.io")
         }
+        maven {
+            url = uri("https://maven.pkg.github.com/SrizanX/pos-printer")
+            credentials {
+                username = "SrizanX"
+                password =
+                    "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"
+            }
+        }
     }
 }
 
@@ -34,3 +42,5 @@ include(":printer-sunmi")
 include(":printer-imin")
 include(":printer-nexgo")
 include(":printer-printon")
+include(":printer-nexgo-lib")
+include(":printer-printon-lib")

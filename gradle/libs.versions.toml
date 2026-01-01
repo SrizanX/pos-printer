@@ -13,6 +13,7 @@ sunmiPrinter = "1.0.24"
 dantsu-escpos = "3.4.0"
 iminPrinter = "V2.0.0.17"
 androidxStartup = "1.2.0"
+kotlinGradlePlugin = "2.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,6 +30,7 @@ androidx-startup-runtime = { module = "androidx.startup:startup-runtime", versio
 printer-imin = { module = "com.github.iminsoftware:IminPrinterLibrary", version.ref = "iminPrinter" }
 printer-sunmi = { module = "com.sunmi:printerlibrary", version.ref = "sunmiPrinter" }
 dantsu-escpos = { module = "com.github.DantSu:ESCPOS-ThermalPrinter-Android", version.ref = "dantsu-escpos" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
