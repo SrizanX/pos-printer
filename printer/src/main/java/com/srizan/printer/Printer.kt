@@ -123,9 +123,26 @@ object Printer {
         return printer?.getDeviceSerialNumber()
     }
 
-}
+    /**
+     * Execute a print operation only if the printer is operational.
+     * This is a convenience method that checks printer status before executing.
+     * 
+     * Usage in Kotlin:
+     * ```
+     * Printer.ifPrinterOperational {
+     *     printText("Hello", config)
+     * }
+     * ```
+     * 
+     * Usage in Java:
+     * ```
+     * Printer.INSTANCE.ifPrinterOperational(() -> {
+     *     Printer.INSTANCE.printText("Hello", config);
+     * });
+     * ```
+     */
+    fun ifPrinterOperational(print: () -> Unit) {
+        if (isOperational()) print()
+    }
 
-
-fun ifPrinterOperational(print: () -> Unit) {
-    if (Printer.isOperational()) print()
 }

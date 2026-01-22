@@ -11,6 +11,8 @@ A versatile Android library for thermal receipt printers supporting multiple pri
 
 ## Features
 
+✅ **Full Java & Kotlin Support** - Works seamlessly with both languages
+
 ### Print your formatted texts
 
 ![Text](screenshots/01_text_formatting.png "Print your formatted texts")
@@ -59,6 +61,8 @@ A versatile Android library for thermal receipt printers supporting multiple pri
 
 ## Usage
 
+### Kotlin
+
 Initialize the printer in your application:
 
 ```kotlin
@@ -85,8 +89,60 @@ Printer.printQRCode("https://example.com", QRCodeConfig())
 Print Barcode:
 
 ```kotlin
-Printer.printBarcode("1234567890", BarcodeConfig())
+Printer.printBarcode("1234567890", BarcodeConfig(symbology = BarcodeSymbology.CODE128))
 ```
+
+### Java
+
+The library is fully compatible with Java. Here are the equivalent examples:
+
+Initialize the printer:
+
+```java
+Printer.INSTANCE.initializePrinter(context);
+```
+
+Print text with formatting:
+
+```java
+TextConfig textConfig = new TextConfig(
+    24,                        // size
+    PrinterAlignment.CENTER,   // alignment
+    true,                      // isBold
+    false,                     // isUnderline
+    false,                     // isDoubleHeight
+    false                      // isDoubleWidth
+);
+Printer.INSTANCE.printText("Hello World!", textConfig);
+```
+
+Print QR Code:
+
+```java
+QRCodeConfig qrConfig = new QRCodeConfig(
+    200,                       // size
+    PrinterAlignment.CENTER,   // alignment
+    null                      // errorCorrectionLevel
+);
+Printer.INSTANCE.printQRCode("https://example.com", qrConfig);
+```
+
+Print Barcode:
+
+```java
+BarcodeConfig barcodeConfig = new BarcodeConfig(
+    BarcodeSymbology.CODE128,  // symbology
+    100,                       // height
+    2,                         // width
+    PrinterAlignment.CENTER,   // alignment
+    null                      // textPosition
+);
+Printer.INSTANCE.printBarcode("1234567890", barcodeConfig);
+```
+
+> **Note:** When using the library from Java, access the singleton instance using `Printer.INSTANCE` instead of just `Printer`.
+
+For a complete Java example, see [JavaExampleActivity.java](app/src/main/java/com/srizan/posprinter/JavaExampleActivity.java) in the sample app.
 
 ## License
 

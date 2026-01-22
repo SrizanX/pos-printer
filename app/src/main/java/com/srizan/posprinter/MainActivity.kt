@@ -29,7 +29,6 @@ import com.srizan.printer.core.enums.PrinterAlignment
 import com.srizan.printer.core.enums.BarcodeSymbology
 import com.srizan.printer.core.enums.BarcodeTextPosition
 import com.srizan.printer.core.enums.PrinterDevice
-import com.srizan.printer.ifPrinterOperational
 
 class MainActivity : AppCompatActivity() {
 
@@ -128,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                 isStrikethrough = checkboxStrikethrough.isChecked,
                 isInverseColor = checkboxInverseColor.isChecked
             )
-            ifPrinterOperational {
+            Printer.ifPrinterOperational {
                 Printer.printText(text, textConfig)
                 Printer.printNewLine(if (checkboxAdd3LineSpace.isChecked) 3 else 0)
             }
@@ -141,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                 if (layoutAlignment.rbLeft.isChecked) PrinterAlignment.LEFT
                 else if (layoutAlignment.rbCenter.isChecked) PrinterAlignment.CENTER else PrinterAlignment.RIGHT
 
-            ifPrinterOperational {
+            Printer.ifPrinterOperational {
                 Printer.printQRCode(
                     data = textQr.text.toString(),
                     QRCodeConfig(
@@ -174,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                 textPosition = textPosition
             )
 
-            ifPrinterOperational {
+            Printer.ifPrinterOperational {
                 Printer.printBarcode(
                     data = textBarcode.text.toString(),
                     barcodeConfig
@@ -392,7 +391,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.menu_get_printer_serial -> {
-                ifPrinterOperational {
+                Printer.ifPrinterOperational {
                     Printer.getDeviceSerialNumber()?.let { showToast(it) }
                 }
                 true

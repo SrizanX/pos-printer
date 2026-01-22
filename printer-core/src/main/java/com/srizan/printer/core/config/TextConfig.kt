@@ -2,7 +2,7 @@ package com.srizan.printer.core.config
 
 import com.srizan.printer.core.enums.PrinterAlignment
 
-data class TextConfig(
+data class TextConfig @JvmOverloads constructor(
     val size: Int = 24,
     val printerAlignment: PrinterAlignment = PrinterAlignment.LEFT,
     val isBold: Boolean = false,
