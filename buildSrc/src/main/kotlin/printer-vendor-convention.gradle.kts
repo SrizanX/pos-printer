@@ -1,13 +1,14 @@
-import com.android.build.gradle.LibraryExtension
+
+import com.android.build.api.dsl.LibraryExtension
+import gradle.kotlin.dsl.accessors._3dfc63a612bb7993dc38df28b51798c6.kotlin
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
 }
 
 configure<LibraryExtension> {
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 21

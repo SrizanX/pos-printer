@@ -2,12 +2,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {
     namespace = "com.srizan.printer.core"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 21

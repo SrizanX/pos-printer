@@ -11,6 +11,9 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -25,7 +28,7 @@ dependencyResolutionManagement {
             credentials {
                 username = "SrizanX"
                 password =
-                    "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"
+                    "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"
             }
         }
     }
