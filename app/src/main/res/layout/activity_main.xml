@@ -13,6 +13,12 @@
         android:orientation="vertical">
 
         <include
+            android:id="@+id/layout_image"
+            layout="@layout/layout_print_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
             android:id="@+id/layout_text"
             layout="@layout/layout_print_text"
             android:layout_width="match_parent"

@@ -1,6 +1,6 @@
 
 import com.android.build.api.dsl.LibraryExtension
-import gradle.kotlin.dsl.accessors._3dfc63a612bb7993dc38df28b51798c6.kotlin
+import gradle.kotlin.dsl.accessors._7c14c76da6582a6e8f7ea9ce2fab1dea.kotlin
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {

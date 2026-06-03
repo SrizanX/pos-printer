@@ -1,6 +1,7 @@
 package com.srizan.posprinter
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputType
@@ -10,7 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ScrollView
+import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -25,14 +28,33 @@ import com.srizan.printer.core.config.BarcodeConfig
 import com.srizan.printer.core.config.QRCodeConfig
 import com.srizan.printer.core.config.TableConfig
 import com.srizan.printer.core.config.TextConfig
-import com.srizan.printer.core.enums.PrinterAlignment
 import com.srizan.printer.core.enums.BarcodeSymbology
 import com.srizan.printer.core.enums.BarcodeTextPosition
+import com.srizan.printer.core.enums.PrinterAlignment
 import com.srizan.printer.core.enums.PrinterDevice
+import com.srizan.printy.CanvasEditorContract
+import com.srizan.util.ditherer.DitherPresets
+import com.srizan.util.ditherer.Ditherer
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    // Registers a photo picker activity launcher in single-select mode.
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            showPreview(uri, "Gallery")
+        }
+    }
+
+    // Registers the canvas editor launcher
+    val canvasEditor = registerForActivityResult(CanvasEditorContract()) { bitmap ->
+        if (bitmap != null) {
+            showPreview(bitmap, "Canvas Editor")
+        }
+    }
+
+    private var printBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
         setContentView(binding.root)
         supportActionBar?.subtitle = Printer.selectedPrinter.name
+        setupImageLayout()
 
         binding.layoutText.run {
             setTextFontSize(sliderTextSize.value)
@@ -77,10 +100,7 @@ class MainActivity : AppCompatActivity() {
                 spinnerSymbology.onItemSelectedListener =
                     object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
+                            parent: AdapterView<*>?, view: View?, position: Int, id: Long
                         ) {
                             setupBarcodeEditText(arrayAdapter.getItem(position) as BarcodeSymbology)
                         }
@@ -93,6 +113,88 @@ class MainActivity : AppCompatActivity() {
             sliderBarHeight.addOnChangeListener { _, value, _ -> setBarCodeHeight(value) }
             sliderBarWidth.addOnChangeListener { _, value, _ -> setBarCodeWidth(value) }
             btnPrintBar.setOnClickListener { printBarCode() }
+        }
+    }
+
+    private fun setupImageLayout() {
+        binding.layoutImage.run {
+            btnOpenGallery.setOnClickListener {
+                pickMedia.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
+            btnOpenCanvasEditor.setOnClickListener {
+                canvasEditor.launch(Unit)
+            }
+            btnPrintImage.setOnClickListener {
+                printImage()
+            }
+
+            btnRemoveImage.setOnClickListener {
+                clearPreview()
+            }
+        }
+    }
+
+
+    private fun showPreview(uri: Uri, source: String) {
+        //val grayscale = convertToAtkinson(uri, 384, threshold = 110)
+        val grayscale = Ditherer(
+            kernel = DitherPresets.atkinson
+        ).dither(this, uri).also { printBitmap = it }
+
+        printBitmap = grayscale
+
+        binding.layoutImage.run {
+            imgPreview.setImageBitmap(grayscale)
+            imgPreview.visibility = View.VISIBLE
+            layoutPlaceholder.visibility = View.GONE
+            tvSourceTag.text = source
+            tvSourceTag.visibility = View.VISIBLE
+            btnRemoveImage.visibility = View.VISIBLE
+            btnPrintImage.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showPreview(bitmap: Bitmap, source: String) {
+        printBitmap = bitmap
+
+        binding.layoutImage.run {
+            imgPreview.setImageBitmap(bitmap)
+            imgPreview.visibility = View.VISIBLE
+            layoutPlaceholder.visibility = View.GONE
+            tvSourceTag.text = source
+            tvSourceTag.visibility = View.VISIBLE
+            btnRemoveImage.visibility = View.VISIBLE
+            btnPrintImage.visibility = View.VISIBLE
+        }
+    }
+
+    private fun clearPreview() {
+        printBitmap?.recycle()
+        printBitmap = null
+        binding.layoutImage.run {
+            imgPreview.setImageBitmap(null)
+            imgPreview.visibility = View.GONE
+            layoutPlaceholder.visibility = View.VISIBLE
+            tvSourceTag.visibility = View.GONE
+            btnRemoveImage.visibility = View.GONE
+            btnPrintImage.visibility = View.GONE
+        }
+    }
+
+
+    private fun printImage() {
+        val bitmap = binding.layoutImage.imgPreview.drawable.toBitmapOrNull()
+        if (bitmap != null) {
+            Printer.ifPrinterOperational {
+                Printer.printImage(bitmap, PrinterAlignment.CENTER)
+                Printer.printNewLine(3)
+            }
+        } else {
+            AlertDialog.Builder(this).setTitle("Error")
+                .setMessage("Failed to load the image for printing.").setPositiveButton("OK", null)
+                .show()
         }
     }
 
@@ -371,6 +473,10 @@ class MainActivity : AppCompatActivity() {
         Printer.selectPrinter(printerDevice)
         supportActionBar?.subtitle = Printer.selectedPrinter.name
 
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

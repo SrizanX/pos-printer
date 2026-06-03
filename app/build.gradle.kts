@@ -44,7 +44,8 @@ kotlin {
 
 dependencies {
     implementation(projects.printer)
-    
+    implementation(projects.utilCanvas)
+    implementation(projects.utilDitherer)
     // Add only the vendor implementations you need
     implementation(projects.printerSunmi)
     implementation(projects.printerImin)
